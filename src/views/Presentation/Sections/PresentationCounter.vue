@@ -14,7 +14,7 @@ import DefaultCounterCard from "../../../examples/cards/counterCards/DefaultCoun
                 title="Coded Elements"
                 description="From buttons, to inputs, navbars, alerts or cards, you are
                   covered"
-                :count="70"
+                :count="100"
                 suffix="+"
                 :duration="3000"
                 divider="vertical"
