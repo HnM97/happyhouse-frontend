@@ -2,7 +2,7 @@
 import { onMounted } from "vue";
 
 //example components
-import DefaultNavbar from "@/examples/navbars/NavbarDefault.vue";
+import NavbarDefault from "@/examples/navbars/NavbarDefault.vue";
 import DefaultFooter from "@/examples/footers/FooterDefault.vue";
 
 //notice
@@ -14,15 +14,17 @@ import MaterialPaginationItem from "@/components/MaterialPaginationItem.vue";
 
 // material-input
 import setMaterialInput from "@/assets/js/material-input";
+import backgroundImage from "@/assets/img/background.jpg";
+
 onMounted(() => {
   setMaterialInput();
 });
 </script>
 <template>
-  <div class="container position-sticky z-index-sticky top-0">
+  <div>
     <div class="row">
       <div class="col-12">
-        <DefaultNavbar
+        <NavbarDefault
           :sticky="true"
           :action="{
             route: 'https://www.creative-tim.com/product/vue-material-kit-pro',
@@ -34,10 +36,11 @@ onMounted(() => {
     </div>
   </div>
   <section>
-    <div class="page-header min-vh-100">
+    <div class="page-header min-vh-100" :style="{ backgroundImage: `url(${backgroundImage})` }">
+      <span class="mask bg-gradient-dark opacity-6"></span>
       <div class="container">
         <div class="row">
-          <div class="card d-flex blur justify-content-center shadow-lg my-sm-0 my-sm-6 mt-8 mb-5">
+          <div class="card d-flex bg-opacity-100 justify-content-center shadow-lg my-sm-0 my-sm-6 mt-8 mb-5">
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
               <div class="bg-gradient-dark shadow-dark border-radius-lg p-3">
                 <h3 class="text-white text-success mb-0">공지사항</h3>

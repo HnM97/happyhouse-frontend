@@ -11,6 +11,7 @@ import Typed from "typed.js";
 
 // images
 import vueMkHeader from "@/assets/img/vue-mk-header.jpg";
+import backgroundImage from "@/assets/img/background.jpg";
 
 const body = document.getElementsByTagName("body")[0];
 
@@ -25,6 +26,8 @@ onMounted(() => {
       backSpeed: 90,
       backDelay: 200,
       startDelay: 500,
+      showCursor: false,
+      // fadeOutDelay: true,
       loop: true,
     });
   }
@@ -39,20 +42,42 @@ onMounted(() => {
     </div>
   </div>
   <Header>
-    <div class="page-header min-vh-50" :style="`background-image: url(${vueMkHeader})`" loading="lazy">
+    <div
+      class="page-header min-vh-50"
+      :style="`background-image: url(${backgroundImage})`"
+      loading="lazy"
+    >
+      <span class="mask bg-gradient-dark opacity-6"></span>
       <div class="container">
         <div class="row">
           <div class="col-lg-7 text-center mx-auto position-relative">
-            <h1 class="text-white pt-3 mt-n5 me-2" :style="{ display: 'inline-block ' }">현재 가장 핫한</h1>
-            <h1 class="text-white px-5 mt-3 mb-5" :style="{ fontWeight: '500' }">
+            <h1
+              class="text-white pt-3 mt-n5 me-2"
+              :style="{ display: 'inline-block ' }"
+            >
+              현재 가장 핫한
+            </h1>
+            <h1
+              class="text-white px-5 mt-3 mb-5"
+              :style="{ fontWeight: '500' }"
+            >
               <span class="text-white" id="typed"></span> 알아보세요 !
             </h1>
           </div>
         </div>
         <div class="row mt-5" style="col-gap: 0">
           <div class="d-inline-flex col-5 mx-auto">
-            <MaterialInput class="bg-white rounded-2 border-right-0" placeholder="Type here..." size="md" />
-            <a href="/map" class="btn btn-md ms-0 mb-0 border-left-0 bg-gradient-success text-nowrap" size="md">검색</a>
+            <MaterialInput
+              class="bg-white rounded-2 border-right-0"
+              placeholder="Type here..."
+              size="md"
+            />
+            <a
+              href="/map"
+              class="btn btn-md ms-0 mb-0 border-left-0 bg-gradient-success text-nowrap"
+              size="md"
+              >검색</a
+            >
           </div>
         </div>
       </div>
