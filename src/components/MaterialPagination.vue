@@ -2,7 +2,7 @@
 defineProps({
   color: {
     type: String,
-    default: "success",
+    default: "dark",
   },
   size: {
     type: String,
@@ -19,7 +19,7 @@ function getClasses(color, size) {
 }
 </script>
 <template>
-  <ul class="pagination" :class="getClasses(color, size)">
+  <ul class="pagination m-auto" :class="getClasses(color, size)">
     <slot />
   </ul>
 </template>
