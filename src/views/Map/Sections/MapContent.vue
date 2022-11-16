@@ -1,5 +1,10 @@
-<script setup></script>
+<script setup>
+import KakaoMap from "../Components/KakaoMap.vue";
+</script>
 
 <template>
-  <h1>Map Content</h1>
+  <div>
+    <h1>Map Content</h1>
+    <KakaoMap />
+  </div>
 </template>
