@@ -50,10 +50,10 @@ onMounted(() => {
           </div>
         </div>
         <div class="row mt-5" style="col-gap: 0">
-          <div class="col-5 ms-auto">
-            <MaterialInput class="bg-white rounded-2" placeholder="Type here..." size="md" />
+          <div class="d-inline-flex col-5 mx-auto">
+            <MaterialInput class="bg-white rounded-2 border-right-0" placeholder="Type here..." size="md" />
+            <a href="/map" class="btn btn-md ms-0 mb-0 border-left-0 bg-gradient-success text-nowrap" size="md">검색</a>
           </div>
-          <MaterialButton class="text-white col-1 me-auto bg-primary rounded-2" size="md"> 검색 </MaterialButton>
         </div>
       </div>
     </div>
