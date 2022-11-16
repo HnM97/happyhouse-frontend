@@ -3,10 +3,10 @@ import { onMounted } from "vue";
 
 //example components
 import NavbarDefault from "@/examples/navbars/NavbarDefault.vue";
-import DefaultFooter from "@/examples/footers/FooterDefault.vue";
+import FooterDefault from "@/examples/footers/FooterDefault.vue";
 
 //notice
-import NoticeList from "@/components/Notice/NoticeList.vue";
+import NoticeList from "@/views/Notice/Components/NoticeList.vue";
 
 //pagination
 import MaterialPagination from "@/components/MaterialPagination.vue";
@@ -17,60 +17,53 @@ import setMaterialInput from "@/assets/js/material-input";
 import backgroundImage from "@/assets/img/background.jpg";
 
 onMounted(() => {
-  setMaterialInput();
+    setMaterialInput();
 });
 </script>
 <template>
-  <div>
-    <div class="row">
-      <div class="col-12">
-        <NavbarDefault
-          :sticky="true"
-          :action="{
-            route: 'https://www.creative-tim.com/product/vue-material-kit-pro',
-            color: 'bg-gradient-success',
-            label: 'Buy Now',
-          }"
-        />
-      </div>
-    </div>
-  </div>
-  <section>
-    <div class="page-header min-vh-100" :style="{ backgroundImage: `url(${backgroundImage})` }">
-      <span class="mask bg-gradient-dark opacity-6"></span>
-      <div class="container">
+    <div>
         <div class="row">
-          <div class="card d-flex bg-opacity-100 justify-content-center shadow-lg my-sm-0 my-sm-6 mt-8 mb-5">
-            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-              <div class="bg-gradient-dark shadow-dark border-radius-lg p-3">
-                <h3 class="text-white text-success mb-0">공지사항</h3>
-              </div>
+            <div class="col-12">
+                <NavbarDefault transparent />
             </div>
-            <div class="card-body">
-              <NoticeList></NoticeList>
-              <section class="py-4 pb-3">
-                <div class="container">
-                  <div class="row justify-space-between py-2">
-                    <div class="col-lg-4 mx-auto">
-                      <MaterialPagination>
-                        <MaterialPaginationItem prev />
-                        <MaterialPaginationItem label="1" />
-                        <MaterialPaginationItem label="2" active />
-                        <MaterialPaginationItem label="3" />
-                        <MaterialPaginationItem label="4" />
-                        <MaterialPaginationItem label="5" />
-                        <MaterialPaginationItem next />
-                      </MaterialPagination>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
-  </section>
+    <section>
+        <div class="page-header min-vh-100" :style="{ backgroundImage: `url(${backgroundImage})` }">
+            <span class="mask bg-gradient-dark opacity-6"></span>
+            <div class="container">
+                <div class="row">
+                    <div class="card d-flex bg-opacity-100 justify-content-center shadow-lg my-sm-0 my-sm-6 mt-8 mb-5">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                            <div class="bg-gradient-dark shadow-dark border-radius-lg p-3">
+                                <h3 class="text-white text-success mb-0">공지사항</h3>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <NoticeList></NoticeList>
+                            <section class="py-4 pb-3">
+                                <div class="container">
+                                    <div class="row justify-space-between py-2">
+                                        <div class="col-lg-4 mx-auto d-flex justify-content-center">
+                                            <MaterialPagination>
+                                                <MaterialPaginationItem prev />
+                                                <MaterialPaginationItem label="1" />
+                                                <MaterialPaginationItem label="2" active />
+                                                <MaterialPaginationItem label="3" />
+                                                <MaterialPaginationItem label="4" />
+                                                <MaterialPaginationItem label="5" />
+                                                <MaterialPaginationItem next />
+                                            </MaterialPagination>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <DefaultFooter />
+    <FooterDefault />
 </template>
