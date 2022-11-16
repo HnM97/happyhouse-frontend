@@ -5,9 +5,14 @@ import vue from "@vitejs/plugin-vue";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // build: {
-  //   outDir: "public",
-  // },
+  build: {
+    /** If you set esmExternals to true, this plugins assumes that 
+      all external dependencies are ES modules */
+
+    commonjsOptions: {
+      esmExternals: true,
+    },
+  },
   plugins: [vue()],
   resolve: {
     alias: {

@@ -35,7 +35,7 @@ defineProps({
       <h5 class="font-weight-normal">
         <a href="javascript:;">{{ title }}</a>
       </h5>
-      <p class="mb-0">
+      <p class="mb-0 text-dark">
         {{ description }}
       </p>
       <button type="button" class="btn btn-sm mb-0 mt-3" :class="action.color">

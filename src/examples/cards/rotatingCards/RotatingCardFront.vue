@@ -1,22 +1,16 @@
 <script setup>
+import CenteredBlogCard from "@/examples/cards/blogCards/CenteredBlogCard.vue";
+
 defineProps({
   image: {
     type: String,
     required: true,
   },
-  icon: {
+  aptAddress: {
     type: String,
-    default: "",
+    default: "서울",
   },
-  label: {
-    type: String,
-    default: "",
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  description: {
+  apartmentName: {
     type: String,
     required: true,
   },
@@ -26,24 +20,16 @@ defineProps({
   <div
     class="front front-background"
     :style="{
-      backgroundImage: `url(${image})`,
+      // backgroundImage: `url(${image})`,
       backgroundSize: 'cover',
     }"
   >
     <div class="card-body py-7 text-center">
-      <i v-if="icon" class="material-icons text-white text-4xl my-3">{{
-        icon
-      }}</i>
-      <p
-        v-if="label"
-        class="text-sm text-white text-uppercase font-weight-normal"
-      >
-        {{ label }}
-      </p>
-      <h3 class="text-white" v-html="title" />
-      <p class="text-white opacity-8">
-        {{ description }}
-      </p>
+      <CenteredBlogCard
+        image="https://images.unsplash.com/photo-1544717302-de2939b7ef71?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+        :title="aptAddress"
+        :description="apartmentName"
+      />
     </div>
   </div>
 </template>
