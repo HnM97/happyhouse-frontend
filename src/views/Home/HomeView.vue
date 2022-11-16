@@ -37,12 +37,12 @@ onMounted(() => {
     <div class="position-sticky z-index-sticky top-0">
         <div class="row">
             <div class="col-12">
-                <NavbarDefault light />
+                <NavbarDefault transparent />
             </div>
         </div>
     </div>
     <Header>
-        <div class="page-header min-vh-50" :style="`background-image: url(${backgroundImage})`" loading="lazy">
+        <div class="page-header min-vh-70" :style="`background-image: url(${backgroundImage})`" loading="lazy">
             <span class="mask bg-gradient-dark opacity-6"></span>
             <div class="container">
                 <div class="row">
@@ -56,14 +56,11 @@ onMounted(() => {
                 <div class="row mt-5" style="col-gap: 0">
                     <div class="d-inline-flex col-5 mx-auto">
                         <MaterialInput
-                            class="bg-white rounded-2 border-right-0 px-3"
+                            class="bg-white rounded-2 border-right-0 px-3 mx-2"
                             placeholder="살고싶은 지역을 검색해보세요"
                             size="md"
                         />
-                        <a
-                            href="/map"
-                            class="btn btn-md ms-0 mb-0 border-left-0 bg-gradient-success text-nowrap"
-                            size="md"
+                        <a href="/map" class="btn btn-md ms-0 mb-0 border-left-0 bg-gradient-dark text-nowrap" size="md"
                             >검색</a
                         >
                     </div>
