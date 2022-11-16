@@ -11,6 +11,7 @@ import Typed from "typed.js";
 
 // images
 import vueMkHeader from "@/assets/img/vue-mk-header.jpg";
+import backgroundImage from "@/assets/img/background.jpg";
 
 const body = document.getElementsByTagName("body")[0];
 
@@ -25,6 +26,8 @@ onMounted(() => {
       backSpeed: 90,
       backDelay: 200,
       startDelay: 500,
+      showCursor: false,
+      // fadeOutDelay: true,
       loop: true,
     });
   }
@@ -39,7 +42,8 @@ onMounted(() => {
     </div>
   </div>
   <Header>
-    <div class="page-header min-vh-50" :style="`background-image: url(${vueMkHeader})`" loading="lazy">
+    <div class="page-header min-vh-50" :style="`background-image: url(${backgroundImage})`" loading="lazy">
+      <span class="mask bg-gradient-dark opacity-6"></span>
       <div class="container">
         <div class="row">
           <div class="col-lg-7 text-center mx-auto position-relative">
@@ -51,7 +55,7 @@ onMounted(() => {
         </div>
         <div class="row mt-5" style="col-gap: 0">
           <div class="col-5 ms-auto">
-            <MaterialInput class="bg-white rounded-2" placeholder="Type here..." size="md" />
+            <MaterialInput class="bg-white rounded-2 px-3" placeholder="검색어를 입력하세요" size="md" />
           </div>
           <MaterialButton class="text-white col-1 me-auto bg-primary rounded-2" size="md"> 검색 </MaterialButton>
         </div>
