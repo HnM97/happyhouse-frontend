@@ -17,16 +17,8 @@ onMounted(() => {
     setMaterialInput();
 });
 
-function movehome() {
-    Router.push("/");
-}
-
-function modify() {
-    Router.push("/user/modify");
-}
-
-function deleteuser() {
-    alert("정말 탈퇴하시겠습니까?");
+function moveinfo() {
+    Router.push("/user/userinfo");
 }
 </script>
 <template>
@@ -36,7 +28,7 @@ function deleteuser() {
                 <div class="card z-index-0 fadeIn3 fadeInBottom">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-dark shadow-dark border-radius-lg py-3 pe-1">
-                            <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">회원 정보 확인</h4>
+                            <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">회원 정보 수정</h4>
                         </div>
                     </div>
                     <div class="card-body">
@@ -46,48 +38,29 @@ function deleteuser() {
                                 class="input-group-outline mb-3"
                                 :label="{ text: '김싸피', class: 'form-label' }"
                                 type="text"
-                                isDisabled
                             />
                             <MaterialInput
                                 id="id"
                                 class="input-group-outline mb-3"
                                 :label="{ text: 'ssafy', class: 'form-label' }"
                                 type="text"
-                                isDisabled
                             />
                             <MaterialInput
                                 id="password"
                                 class="input-group-outline mb-3"
                                 :label="{ text: '1234', class: 'form-label' }"
                                 type="password"
-                                isDisabled
                             />
                             <MaterialInput
                                 id="email"
                                 class="input-group-outline my-3"
                                 :label="{ text: 'ssafy@ssafy.com', class: 'form-label' }"
                                 type="email"
-                                isDisabled
                             />
 
                             <div class="text-center row">
                                 <div class="col d-flex">
-                                    <MaterialButton
-                                        class="m-1 my-4 mb-2"
-                                        variant="gradient"
-                                        color="dark"
-                                        fullWidth
-                                        @click="movehome"
-                                    >
-                                        확인
-                                    </MaterialButton>
-                                    <MaterialButton
-                                        class="m-1 my-4 mb-2"
-                                        variant="gradient"
-                                        color="dark"
-                                        fullWidth
-                                        @click="modify"
-                                    >
+                                    <MaterialButton class="m-1 my-4 mb-2" variant="gradient" color="dark" fullWidth>
                                         수정
                                     </MaterialButton>
                                     <MaterialButton
@@ -95,9 +68,9 @@ function deleteuser() {
                                         variant="gradient"
                                         color="dark"
                                         fullWidth
-                                        @click="deleteuser"
+                                        @click="moveinfo"
                                     >
-                                        탈퇴
+                                        취소
                                     </MaterialButton>
                                 </div>
                             </div>

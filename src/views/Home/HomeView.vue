@@ -6,6 +6,7 @@ import NavbarDefault from "../..//examples/navbars/NavbarDefault.vue";
 import Header from "../../examples/Header.vue";
 import MaterialInput from "../../components/MaterialInput.vue";
 import MaterialButton from "../../components/MaterialButton.vue";
+import FooterDefault from "@/examples/footers/FooterDefault.vue";
 //dep
 import Typed from "typed.js";
 
@@ -78,4 +79,5 @@ onMounted(() => {
             </div>
         </div>
     </div>
+    <FooterDefault />
 </template>
