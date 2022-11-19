@@ -1,12 +1,18 @@
 import { createRouter, createWebHistory } from "vue-router";
+
 import HomeView from "@/views/Home/HomeView.vue";
 import NoticeView from "@/views/Notice/NoticeView.vue";
-import NoticeDetailView from "@/views/Notice/NoticeDetail.vue";
+import NoticeTable from "@/views/Notice/Components/NoticeTable.vue";
+import NoticeRegist from "@/views/Notice/Components/NoticeRegist.vue";
+import NoticeDetail from "@/views/Notice/Components/NoticeDetail.vue";
+import NoticeModify from "@/views/Notice/Components/NoticeModify.vue";
+
 import UserView from "@/views/User/UserView.vue";
 import UserRegist from "@/views/User/Components/UserRegist.vue";
 import UserLogin from "@/views/User/Components/UserLogin.vue";
 import UserInfo from "@/views/User/Components/UserInfo.vue";
 import UserModify from "@/views/User/Components/UserModify.vue";
+
 import MapView from "@/views/Map/MapView.vue";
 
 import { userStore } from "@/stores/UserStore.js";
@@ -48,12 +54,40 @@ const router = createRouter({
             path: "/notice",
             name: "notice",
             component: NoticeView,
+            redirect: "/notice/list",
+            children: [
+                {
+                    path: "list",
+                    name: "noticelist",
+                    component: NoticeTable,
+                },
+                {
+                    path: "regist",
+                    name: "noticeregist",
+                    // beforeEnter: onlyAuthUser,
+                    component: NoticeRegist,
+                },
+                {
+                    path: "detail/:articleno",
+                    name: "noticedetail",
+                    // beforeEnter: onlyAuthUser,
+                    component: NoticeDetail,
+                },
+                {
+                    path: "modify/:articleno",
+                    name: "noticemodify",
+                    // beforeEnter: onlyAuthUser,
+                    component: NoticeModify,
+                },
+                {
+                    path: "delete/:articleno",
+                    name: "noticedelete",
+                    // beforeEnter: onlyAuthUser,
+                    component: () => import("@/components/board/BoardDelete"),
+                },
+            ],
         },
-        {
-            path: "/notice/:articleno",
-            name: "noticedetail",
-            component: NoticeDetailView,
-        },
+
         /**
          * User
          */

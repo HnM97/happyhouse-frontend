@@ -1,95 +1,48 @@
 <script setup>
+import { listNotice } from "@/api/notice";
 import NoticeListItem from "@/views/Notice/Components/NoticeListItem.vue";
+import { reactive } from "vue";
 
-const tableData = {
-    headers: ["글번호", "제목", "작성자", "작성일", "조회수"],
-    rows: [
-        {
-            articleno: 1,
-            userid: "test",
-            subject: "testtesttest",
-            hit: 1,
-            registertime: "2022-11-16",
-        },
-        {
-            articleno: 2,
-            userid: "test",
-            subject: "testtesttest",
-            hit: 1,
-            registertime: "2022-11-16",
-        },
-        {
-            articleno: 3,
-            userid: "test",
-            subject: "testtesttest",
-            hit: 1,
-            registertime: "2022-11-16",
-        },
-        {
-            articleno: 4,
-            userid: "test",
-            subject: "testtesttest",
-            hit: 1,
-            registertime: "2022-11-16",
-        },
-        {
-            articleno: 5,
-            userid: "test",
-            subject: "testtesttest",
-            hit: 1,
-            registertime: "2022-11-16",
-        },
-        {
-            articleno: 6,
-            userid: "test",
-            subject: "testtesttest",
-            hit: 1,
-            registertime: "2022-11-16",
-        },
-        // {
-        //     articleno: 6,
-        //     userid: "test",
-        //     subject: "testtesttest",
-        //     hit: 1,
-        //     registertime: "2022-11-16",
-        // },
-        // {
-        //     articleno: 6,
-        //     userid: "test",
-        //     subject: "testtesttest",
-        //     hit: 1,
-        //     registertime: "2022-11-16",
-        // },
-        // {
-        //     articleno: 6,
-        //     userid: "test",
-        //     subject: "testtesttest",
-        //     hit: 1,
-        //     registertime: "2022-11-16",
-        // },
-        // {
-        //     articleno: 6,
-        //     userid: "test",
-        //     subject: "testtesttest",
-        //     hit: 1,
-        //     registertime: "2022-11-16",
-        // },
-        // {
-        //     articleno: 6,
-        //     userid: "test",
-        //     subject: "testtesttest",
-        //     hit: 1,
-        //     registertime: "2022-11-16",
-        // },
-    ],
+const headers = ["글번호", "제목", "작성자", "작성일", "조회수"];
+// const rows = [
+//     {
+//         articleno: 1,
+//         userid: "test",
+//         subject: "testtesttest",
+//         hit: 1,
+//         registertime: "2022-11-16",
+//     },
+// ];
+
+const articles = reactive([]);
+
+let param = {
+    pgno: 1,
+    spp: 20,
+    key: null,
+    word: null,
 };
+
+listNotice(
+    param,
+    ({ data }) => {
+        for (let index = 0; index < data.length; index++) {
+            articles.push(data[index]);
+        }
+        // console.log("NoticeList articles \\> ");
+        // console.log(articles);
+    },
+    (error) => {
+        console.log(error);
+    }
+);
 </script>
 <template>
-    <table class="table align-items-center mb-0">
+    <table class="table align-items-center my-4 mt-2">
         <thead>
             <tr>
                 <th
-                    v-for="(header, index) in tableData.headers"
+                    v-for="(header, index) in headers"
                     :key="header"
                     class="text-center text-secondary text-md font-weight-bolder opacity-7 my-4"
                 >
@@ -98,7 +51,7 @@ const tableData = {
             </tr>
         </thead>
         <tbody>
-            <NoticeListItem v-bind="tableData" />
+            <NoticeListItem :articles="articles" :pgno="pgno" />
         </tbody>
     </table>
 </template>
