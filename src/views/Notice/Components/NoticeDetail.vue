@@ -18,13 +18,13 @@ import notice from "@/assets/img/notice.jpg";
 
 import Router from "@/router";
 import { useRoute } from "vue-router";
-import { getNotice } from "@/api/notice";
+import { getNotice, deleteNotice } from "@/api/notice";
 
 const route = useRoute();
 
 let paramArticleno = route.params.articleno;
 let paramPgno = route.params.pgno;
-
+console.log(paramPgno);
 getNotice(
     paramArticleno,
     ({ data }) => {
@@ -75,16 +75,35 @@ function moveModifyNotice() {
             content: article.content,
             hit: article.hit,
             registerTime: article.registerTime,
+            pgno: paramPgno,
         },
     });
     //   this.$router.push({ path: `/board/modify/${this.article.articleno}` });
 }
-function deleteNotice() {
+function deleteThisNotice() {
     if (confirm("글을 삭제하시겠습니까?")) {
-        Router.replace({
-            name: "noticedelete",
-            params: { articleno: article.articleno, pgno: paramPgno },
-        });
+        const param = { articleno: paramArticleno, pgno: paramPgno };
+        deleteNotice(
+            param,
+            ({ data }) => {
+                let msg = "삭제 처리시 문제가 발생했습니다.";
+                if (data === "success") {
+                    msg = "삭제가 완료되었습니다.";
+                }
+                alert(msg);
+                // 현재 route를 /list로 변경.
+                Router.push({ name: "noticelist" });
+            },
+            (error) => {
+                console.log(error);
+            }
+        );
+
+        // 삭제 페이지 없이 alert 띄우고 넘어갈 거임
+        // Router.replace({
+        //     name: "noticedelete",
+        //     params: { articleno: article.articleno, pgno: paramPgno },
+        // });
     }
 }
 </script>
@@ -172,7 +191,7 @@ function deleteNotice() {
                                             variant="outline"
                                             color="danger"
                                             size="sm"
-                                            @click="deleteNotice"
+                                            @click="deleteThisNotice"
                                             >삭제</MaterialButton
                                         >
                                     </div>

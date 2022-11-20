@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, toRefs } from "vue";
 
 //example components
 import NavbarDefault from "@/examples/navbars/NavbarDefault.vue";
@@ -25,16 +25,20 @@ import { getNotice, modifyNotice } from "@/api/notice";
 // console.log();
 
 const route = useRoute();
-let param = route.params.articleno;
+let paramArticleno = route.params.articleno;
+let paramPgno = route.params.pgno;
+
 getNotice(
-    param,
+    paramArticleno,
     ({ data }) => {
         article.articleno = data.articleNo;
         article.userid = data.userId;
+        article.username = data.userName;
         article.subject = data.subject;
         article.content = data.content;
         article.hit = data.hit;
         article.registerTime = data.registerTime;
+        console.log(article);
     },
     (error) => {
         console.log(error);
@@ -49,29 +53,24 @@ onMounted(() => {
 const article = reactive({
     articleno: 0,
     userid: "관리자 id",
-    userName: "관리자 이름",
+    username: "관리자 이름",
     subject: "default subject",
     content: "default content",
     hit: 0,
     registerTime: null,
 });
-
-// article.articleno = route.params.articleno;
-// article.userid = route.params.userid;
-// article.userName = route.params.userName;
-// article.subject = route.params.subject;
-// article.content = route.params.content;
-// article.hit = route.params.hit;
-// article.registerTime = route.params.registerTime;
+console.log(article);
+console.log("NoticeModify article.articleno : " + article.articleno);
+console.log("NoticeModify article.hit : " + article.hit);
+console.log("NoticeModify article.content : " + article.content);
 
 let params = {
-    articleNo: article.articleno,
-    userId: article.userid,
+    articleno: article.articleno,
+    userid: article.userid,
     subject: article.subject,
     content: article.content,
 };
-console.log("article.hit : " + article.hit);
-console.log(article.content);
+
 function modify() {
     modifyNotice(
         params,
@@ -83,6 +82,7 @@ function modify() {
             alert(msg);
             // 현재 route를 /list로 변경.
             // moveList();
+            movedetail();
         },
         (error) => {
             console.log("no");
@@ -92,7 +92,7 @@ function modify() {
 }
 
 function movedetail() {
-    Router.push({ name: "noticedetail", params: { articleno: article.articleno } });
+    Router.push({ name: "noticedetail", params: { articleno: article.articleno, pgno: paramPgno } });
 }
 
 function moveList() {
@@ -125,7 +125,7 @@ function test() {
                     <div class="col-9 mx-auto d-flex justify-content-center">
                         <div class="row py-1">
                             <div class="col-lg-12 col-md-12 z-index-2 position-relative px-md-2 px-sm-5 mx-auto">
-                                <form class="p-3" id="contact-form" method="post" @reset="movedetail">
+                                <form class="p-3" id="contact-form" method="post">
                                     <div class="card-body pt-1 px-0">
                                         <div class="row">
                                             <div class="align-items-center my-4 mt-5">
@@ -171,7 +171,7 @@ function test() {
                                                     class="m-1 mb-0"
                                                     variant="outline"
                                                     color="danger"
-                                                    type="reset"
+                                                    @click="movedetail"
                                                     >취소</MaterialButton
                                                 >
                                             </div>

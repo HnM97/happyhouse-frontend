@@ -36,6 +36,9 @@ listNotice(
         console.log(error);
     }
 );
+
+console.log("NoticeList articles \\> ");
+console.log(articles);
 </script>
 <template>
     <table class="table align-items-center my-4 mt-2">

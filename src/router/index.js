@@ -79,12 +79,6 @@ const router = createRouter({
                     // beforeEnter: onlyAuthUser,
                     component: NoticeModify,
                 },
-                {
-                    path: "delete/:articleno",
-                    name: "noticedelete",
-                    // beforeEnter: onlyAuthUser,
-                    component: () => import("@/components/board/BoardDelete"),
-                },
             ],
         },
 

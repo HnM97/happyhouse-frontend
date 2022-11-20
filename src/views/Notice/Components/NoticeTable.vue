@@ -24,7 +24,7 @@ onMounted(() => {
 });
 
 function moveNoticeRegist() {
-    Router.push("/notice/regist");
+    Router.replace("/notice/regist");
 }
 </script>
 <template>

@@ -15,12 +15,12 @@ function getNotice(articleno, success, fail) {
 }
 
 function modifyNotice(article, success, fail) {
-    alert("hihi : " + JSON.stringify(article));
+    alert("api notice.js : " + JSON.stringify(article));
     api.put(`/notice/notices`, JSON.stringify(article)).then(success).catch(fail);
 }
 
-function deleteNotice(articleno, success, fail) {
-    api.delete(`/notice/notices/${articleno}`).then(success).catch(fail);
+function deleteNotice(param, success, fail) {
+    api.delete(`/notice/notices?articleno=${param.articleno}&pgno=${param.pgno}`).then(success).catch(fail);
 }
 
 export { listNotice, writeNotice, getNotice, modifyNotice, deleteNotice };
