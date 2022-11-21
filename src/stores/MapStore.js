@@ -8,7 +8,11 @@ export const useMapStore = defineStore("useMapStore", {
     },
     aptList: [],
   }),
-  getters: {},
+  getters: {
+    getKeyword(state) {
+      return state.keyword;
+    },
+  },
   actions: {
     async changeRegcode(keyword) {
       await keywordToReg(

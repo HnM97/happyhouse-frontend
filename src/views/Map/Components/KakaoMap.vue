@@ -5,10 +5,14 @@ import { storeToRefs } from "pinia";
 let map = null;
 const store = useMapStore();
 
-const { keyword } = storeToRefs(store);
+// const keyword = computed(() => {
+//   changeCenterByKeyword(store.getKeyword);
+// });
+// store.$subscribe(changeCenterByKeyword);
 
-computed(() => {
-  changeCenterByKeyword(store.keyword);
+store.$subscribe((mutation, state) => {
+  changeCenterByKeyword(state.keyword);
+  initCluster();
 });
 
 const data = {
@@ -31,28 +35,51 @@ const data = {
 };
 
 onMounted(() => {
-  if (!(window.kakao && window.kakao.maps)) {
+  if (window.kakao && window.kakao.maps) {
+    initMap();
+  } else {
     const mapScript = document.createElement("script");
-    const libScript = document.createElement("script");
     /* global kakao */
-    libScript.onload = () => kakao.maps.load(initMap);
-    mapScript.src = "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=d79b57317cdaea54c25c615a6bc5ac7d";
-    libScript.src =
+    mapScript.onload = () => kakao.maps.load(initMap);
+    mapScript.src =
       "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=d79b57317cdaea54c25c615a6bc5ac7d&libraries=services,clusterer,drawing";
     document.head.appendChild(mapScript);
-    document.head.appendChild(libScript);
   }
 });
 function initMap() {
   const container = document.getElementById("map");
   const options = {
     center: new kakao.maps.LatLng(33.450701, 126.570667),
-    level: 5,
+    level: 7,
   };
   //지도 객체를 등록합니다.
   //지도 객체는 반응형 관리 대상이 아니므로 initMap에서 선언합니다.
   map = new kakao.maps.Map(container, options);
-  changeCenterByKeyword(keyword);
+  // changeCenterByKeyword(store.getKeyword);
+}
+
+function initCluster() {
+  if (!(window.kakao && window.kakao.maps)) {
+    return;
+  }
+
+  const clusterer = new kakao.maps.MarkerClusterer({
+    map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+    averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+    minLevel: 3, // 클러스터 할 최소 지도 레벨
+  });
+  let markers = [];
+  // console.log(store.aptList);
+  const aptList = store.aptList;
+  aptList.map((apt, index) => {
+    markers.push(
+      new kakao.maps.Marker({
+        position: new kakao.maps.LatLng(apt.lat, apt.lng),
+      })
+    );
+  });
+  console.log("add markers in cluster");
+  clusterer.addMarkers(markers);
 }
 
 function changeSize(size) {
@@ -66,7 +93,9 @@ function displayMarker(markerPositions) {
     data.markers.forEach((marker) => marker.setMap(null));
   }
 
-  const positions = markerPositions.map((position) => new kakao.maps.LatLng(...position));
+  const positions = markerPositions.map(
+    (position) => new kakao.maps.LatLng(...position)
+  );
 
   if (positions.length > 0) {
     data.markers = positions.map(
@@ -77,7 +106,10 @@ function displayMarker(markerPositions) {
         })
     );
 
-    const bounds = positions.reduce((bounds, latlng) => bounds.extend(latlng), new kakao.maps.LatLngBounds());
+    const bounds = positions.reduce(
+      (bounds, latlng) => bounds.extend(latlng),
+      new kakao.maps.LatLngBounds()
+    );
 
     map.setBounds(bounds);
   }
@@ -103,13 +135,15 @@ function displayInfoWindow() {
   map.setCenter(iwPosition);
 }
 
-function changeCenterByKeyword() {
+function changeCenterByKeyword(keyword) {
+  if (!(window.kakao && window.kakao.maps)) {
+    return;
+  }
   // 주소-좌표 변환 객체를 생성합니다
   var geocoder = new kakao.maps.services.Geocoder();
   console.log("change by keyword");
-  console.log(keyword.value);
   // 주소로 좌표를 검색합니다
-  geocoder.addressSearch(keyword.value, function (result, status) {
+  geocoder.addressSearch(keyword, function (result, status) {
     // 정상적으로 검색이 완료됐으면
     if (status === kakao.maps.services.Status.OK) {
       var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
@@ -139,8 +173,12 @@ function changeCenterByKeyword() {
     <div class="button-group">
       <button @click="changeSize(0)">Hide</button>
       <button @click="changeSize(400)">show</button>
-      <button @click="displayMarker(data.markerPositions1)">marker set 1</button>
-      <button @click="displayMarker(data.markerPositions2)">marker set 2</button>
+      <button @click="displayMarker(data.markerPositions1)">
+        marker set 1
+      </button>
+      <button @click="displayMarker(data.markerPositions2)">
+        marker set 2
+      </button>
       <button @click="displayMarker([])">marker set 3 (empty)</button>
       <button @click="displayInfoWindow">infowindow</button>
     </div>
