@@ -1,11 +1,43 @@
 import { createRouter, createWebHistory } from "vue-router";
+
 import HomeView from "@/views/Home/HomeView.vue";
 import NoticeView from "@/views/Notice/NoticeView.vue";
-import NoticeDetailView from "@/views/Notice/NoticeDetailView.vue";
-import RegistView from "@/views/User/RegistView.vue";
-import LoginView from "@/views/User/LoginView.vue";
-import UserInfoView from "@/views/User/UserInfoView.vue";
+import NoticeTable from "@/views/Notice/Components/NoticeTable.vue";
+import NoticeRegist from "@/views/Notice/Components/NoticeRegist.vue";
+import NoticeDetail from "@/views/Notice/Components/NoticeDetail.vue";
+import NoticeModify from "@/views/Notice/Components/NoticeModify.vue";
+
+import UserView from "@/views/User/UserView.vue";
+import UserRegist from "@/views/User/Components/UserRegist.vue";
+import UserLogin from "@/views/User/Components/UserLogin.vue";
+import UserInfo from "@/views/User/Components/UserInfo.vue";
+import UserModify from "@/views/User/Components/UserModify.vue";
+
 import MapView from "@/views/Map/MapView.vue";
+
+import { userStore } from "@/stores/UserStore.js";
+
+const onlyAuthUser = async (to, from, next) => {
+    // const checkUserInfo = store.getters["userStore/checkUserInfo"];
+    // const checkToken = store.getters["userStore/checkToken"];
+    let token = sessionStorage.getItem("access-token");
+    // console.log("로그인 처리 전", checkUserInfo, token);
+    console.log("로그인 처리 전", userStore.userInfo, token);
+
+    // if (checkUserInfo != null && token) {
+    if (userStore.userInfo != null && token) {
+        console.log("토큰 유효성 체크하러 가자!!!!");
+        await store.dispatch("userStore/getUserInfo", token);
+    }
+    if (!checkToken || checkUserInfo === null) {
+        alert("로그인이 필요한 페이지입니다..");
+        // next({ name: "login" });
+        router.push({ name: "login" });
+    } else {
+        console.log("로그인 했다!!!!!!!!!!!!!.");
+        next();
+    }
+};
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,30 +54,67 @@ const router = createRouter({
             path: "/notice",
             name: "notice",
             component: NoticeView,
+            redirect: "/notice/list",
+            children: [
+                {
+                    path: "list",
+                    name: "noticelist",
+                    component: NoticeTable,
+                },
+                {
+                    path: "regist",
+                    name: "noticeregist",
+                    // beforeEnter: onlyAuthUser,
+                    component: NoticeRegist,
+                },
+                {
+                    path: "detail/:articleno",
+                    name: "noticedetail",
+                    // beforeEnter: onlyAuthUser,
+                    component: NoticeDetail,
+                },
+                {
+                    path: "modify/:articleno",
+                    name: "noticemodify",
+                    // beforeEnter: onlyAuthUser,
+                    component: NoticeModify,
+                },
+            ],
         },
-        {
-            path: "/notice/:articleno",
-            name: "noticedetail",
-            component: NoticeDetailView,
-        },
+
         /**
          * User
          */
         {
-            path: "/login",
-            name: "login",
-            component: LoginView,
+            path: "/user",
+            name: "user",
+            component: UserView,
+            children: [
+                {
+                    path: "login",
+                    name: "login",
+                    component: UserLogin,
+                },
+                {
+                    path: "regist",
+                    name: "regist",
+                    component: UserRegist,
+                },
+                {
+                    path: "userinfo",
+                    name: "userinfo",
+                    // beforeEnter: onlyAuthUser,
+                    component: UserInfo,
+                },
+                {
+                    path: "modify",
+                    name: "modify",
+                    // beforeEnter: onlyAuthUser,
+                    component: UserModify,
+                },
+            ],
         },
-        {
-            path: "/regist",
-            name: "regist",
-            component: RegistView,
-        },
-        {
-            path: "/userinfo",
-            name: "userinfo",
-            component: UserInfoView,
-        },
+
         /**
          * Map
          */
