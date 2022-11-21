@@ -13,6 +13,12 @@ import MaterialButton from "@/components/MaterialButton.vue";
 
 // material-input
 import setMaterialInput from "@/assets/js/material-input";
+
+import { userStore } from "@/stores/UserStore.js";
+import { computed } from "@vue/reactivity";
+
+const userinfo = computed(() => userStore.userinfo);
+
 onMounted(() => {
     setMaterialInput();
 });
@@ -44,28 +50,28 @@ function deleteuser() {
                             <MaterialInput
                                 id="name"
                                 class="input-group-outline mb-3"
-                                :label="{ text: '김싸피', class: 'form-label' }"
+                                :label="{ text: `${userinfo.username}`, class: 'form-label' }"
                                 type="text"
                                 isDisabled
                             />
                             <MaterialInput
                                 id="id"
                                 class="input-group-outline mb-3"
-                                :label="{ text: 'ssafy', class: 'form-label' }"
+                                :label="{ text: `${userinfo.userid}`, class: 'form-label' }"
                                 type="text"
                                 isDisabled
                             />
                             <MaterialInput
                                 id="password"
                                 class="input-group-outline mb-3"
-                                :label="{ text: '1234', class: 'form-label' }"
+                                :label="{ text: `${userinfo.password}`, class: 'form-label' }"
                                 type="password"
                                 isDisabled
                             />
                             <MaterialInput
                                 id="email"
                                 class="input-group-outline my-3"
-                                :label="{ text: 'ssafy@ssafy.com', class: 'form-label' }"
+                                :label="{ text: `${userinfo.email}`, class: 'form-label' }"
                                 type="email"
                                 isDisabled
                             />

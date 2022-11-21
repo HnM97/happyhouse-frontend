@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, toRefs } from "vue";
+import { onMounted, onUpdated, reactive } from "vue";
 
 //example components
 import NavbarDefault from "@/examples/navbars/NavbarDefault.vue";
@@ -27,6 +27,8 @@ import { getNotice, modifyNotice } from "@/api/notice";
 const route = useRoute();
 let paramArticleno = route.params.articleno;
 let paramPgno = route.params.pgno;
+console.log("NoticeModify paramArticleno : " + paramArticleno);
+console.log("NoticeModify paramPgno : " + paramPgno);
 
 getNotice(
     paramArticleno,
@@ -38,6 +40,7 @@ getNotice(
         article.content = data.content;
         article.hit = data.hit;
         article.registerTime = data.registerTime;
+        console.log("NoticeModify getNotice article : \\>");
         console.log(article);
     },
     (error) => {
@@ -49,7 +52,6 @@ onMounted(() => {
     setMaterialInput();
 });
 
-////////////////// 반응하지 않음 ㅜㅜ
 const article = reactive({
     articleno: 0,
     userid: "관리자 id",
@@ -59,22 +61,26 @@ const article = reactive({
     hit: 0,
     registerTime: null,
 });
-console.log(article);
-console.log("NoticeModify article.articleno : " + article.articleno);
-console.log("NoticeModify article.hit : " + article.hit);
-console.log("NoticeModify article.content : " + article.content);
 
-let params = {
-    articleno: article.articleno,
-    userid: article.userid,
-    subject: article.subject,
-    content: article.content,
-};
+console.log("NoticeModify article : \\>");
+console.log(article);
 
 function modify() {
+    let params = {
+        articleNo: article.articleno,
+        userId: article.userid,
+        userName: null,
+        subject: article.subject,
+        content: article.content,
+        hit: null,
+        registerTime: null,
+    };
+    alert("1NoticeModify modify article.subject : " + JSON.stringify(article));
+    alert("2NoticeModify modify params.subject : " + JSON.stringify(params));
     modifyNotice(
         params,
         ({ data }) => {
+            alert("4NoticeModify modifyNotice: " + data);
             let msg = "수정 처리시 문제가 발생했습니다.";
             if (data === "success") {
                 msg = "수정이 완료되었습니다.";
@@ -82,7 +88,7 @@ function modify() {
             alert(msg);
             // 현재 route를 /list로 변경.
             // moveList();
-            movedetail();
+            // movedetail();
         },
         (error) => {
             console.log("no");
@@ -95,12 +101,13 @@ function movedetail() {
     Router.push({ name: "noticedetail", params: { articleno: article.articleno, pgno: paramPgno } });
 }
 
-function moveList() {
-    Router.push({ name: "noticelist" });
+function movelist() {
+    Router.push("/notice");
 }
 
 function test() {
-    console.log(article.subject);
+    console.log("article.subject: " + article.subject);
+    // console.log("params.subject: " + params.subject);
 }
 </script>
 <template>
@@ -134,7 +141,7 @@ function test() {
                                                     label="Subject"
                                                     type="text"
                                                     placeholder="제목을 입력하세요"
-                                                    v-model:value="article.subject"
+                                                    v-model="article.subject"
                                                     @keyup="test"
                                                 />
                                             </div>
@@ -144,7 +151,7 @@ function test() {
                                                     label="Name"
                                                     type="text"
                                                     placeholder="이름을 입력하세요"
-                                                    :value="article.userid"
+                                                    v-model="article.userid"
                                                     isDisabled
                                                 />
                                             </div>
@@ -154,7 +161,7 @@ function test() {
                                                     class="input-group-static mb-4"
                                                     placeholder="내용을 입력하세요"
                                                     :rows="7"
-                                                    :value="article.content"
+                                                    v-model="article.content"
                                                 ></MaterialTextArea>
                                             </div>
                                         </div>
@@ -164,6 +171,13 @@ function test() {
                                                     class="m-1 mb-0"
                                                     variant="outline"
                                                     color="info"
+                                                    @click="movelist"
+                                                    >목록</MaterialButton
+                                                >
+                                                <MaterialButton
+                                                    class="m-1 mb-0"
+                                                    variant="outline"
+                                                    color="success"
                                                     @click="modify"
                                                     >수정</MaterialButton
                                                 >

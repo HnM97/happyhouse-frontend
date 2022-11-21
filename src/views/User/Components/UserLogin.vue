@@ -22,45 +22,31 @@ onMounted(() => {
 });
 
 const user = reactive({
-    userid: null,
-    userpwd: null,
+    userid: "",
+    userpwd: "",
 });
 
 const isLogin = computed(() => userStore.isLogin);
 // const isLoginError = computed(() => userStore.isLoginError);
 const userInfo = computed(() => userStore.userInfo);
+console.log("userInfo : \\>");
+console.log(userInfo.value);
 
 async function login() {
-    await userStore.userConfirm(user.value);
+    alert(JSON.stringify(user));
+    await userStore.userConfirm(user);
+    alert("hi");
     let token = sessionStorage.getItem("access-token");
-    console.log("1. confirm() token >> " + token);
+    alert("1. confirm() token >> " + token);
     if (isLogin) {
         await userStore.getUserInfo(token);
         console.log("4. confirm() userInfo :: ", userInfo);
         Router.push({ name: "home" });
     }
 }
-
-// computed: {
-//   ...mapState(memberStore, ["isLogin", "isLoginError", "userInfo"]),
-// },
-
-// methods: {
-//   ...mapActions(memberStore, ["userConfirm", "getUserInfo"]),
-//   async confirm() {
-//     await this.userConfirm(this.user);
-//     let token = sessionStorage.getItem("access-token");
-//     // console.log("1. confirm() token >> " + token);
-//     if (this.isLogin) {
-//       await this.getUserInfo(token);
-//       // console.log("4. confirm() userInfo :: ", this.userInfo);
-//       this.$router.push({ name: "main" });
-//     }
-//   },
-//   movePage() {
-//     this.$router.push({ name: "join" });
-//   },
-// },
+function movepage() {
+    Router.push({ name: "regist" });
+}
 </script>
 <template>
     <div class="container my-auto">
@@ -87,6 +73,7 @@ async function login() {
                                 class="input-group-outline mb-3"
                                 :label="{ text: '비밀번호', class: 'form-label' }"
                                 type="password"
+                                autocomplete="off"
                             />
                             <MaterialSwitch
                                 class="d-flex align-items-center mb-3"
@@ -109,7 +96,12 @@ async function login() {
                             </div>
                             <p class="mt-4 text-sm text-center">
                                 아직 회원이 아니세요 ? &nbsp;
-                                <RouterLink class="text-info text-gradient font-weight-bold" to="regist" rel="tooltip">
+                                <RouterLink
+                                    class="text-info text-gradient font-weight-bold"
+                                    to="regist"
+                                    rel="tooltip"
+                                    @click="movepage"
+                                >
                                     회원가입
                                 </RouterLink>
                             </p>

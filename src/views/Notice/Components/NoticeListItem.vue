@@ -19,13 +19,8 @@ const props = defineProps({
     },
 });
 
-// const articles = computed(() => {
-//     return props.articles;
-// });
-
-// props가 인식이 안되고 있음 (undefined)
-console.log("NoticeListItem props.articles.articleNo : " + props.articles.articleNo);
-console.log("NoticeListItem props.articles.pgno : " + props.pgno);
+// props (undefined)
+// console.log("NoticeListItem props.articles[0].articleNo : " + props.articles[0].articleNo);
 </script>
 
 <template>

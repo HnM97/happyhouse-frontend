@@ -68,13 +68,13 @@ const router = createRouter({
                     component: NoticeRegist,
                 },
                 {
-                    path: "detail/:articleno",
+                    path: "detail/:articleno/:pgno",
                     name: "noticedetail",
                     // beforeEnter: onlyAuthUser,
                     component: NoticeDetail,
                 },
                 {
-                    path: "modify/:articleno",
+                    path: "modify/:articleno/:pgno",
                     name: "noticemodify",
                     // beforeEnter: onlyAuthUser,
                     component: NoticeModify,

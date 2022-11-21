@@ -8,33 +8,10 @@ export const userStore = defineStore({
     state: () => ({
         isLogin: false,
         isLoginError: false,
-        userInfo: null,
+        userInfo: "ssafy",
         isValidToken: false,
     }),
-    // getters: {
-    //   checkUserInfo: function (state) {
-    //     return state.userInfo;
-    //   },
-    //   checkToken: function (state) {
-    //     return state.isValidToken;
-    //   },
-    // },
 
-    // mutations: {
-    //   SET_IS_LOGIN: (state, isLogin) => {
-    //     state.isLogin = isLogin;
-    //   },
-    //   SET_IS_LOGIN_ERROR: (state, isLoginError) => {
-    //     state.isLoginError = isLoginError;
-    //   },
-    //   SET_IS_VALID_TOKEN: (state, isValidToken) => {
-    //     state.isValidToken = isValidToken;
-    //   },
-    //   SET_USER_INFO: (state, userInfo) => {
-    //     state.isLogin = true;
-    //     state.userInfo = userInfo;
-    //   },
-    // },
     actions: {
         setIsLogin(isLogin) {
             this.isLogin = isLogin;
@@ -58,7 +35,7 @@ export const userStore = defineStore({
                     if (data.message === "success") {
                         let accessToken = data["access-token"];
                         let refreshToken = data["refresh-token"];
-                        // console.log("login success token created!!!! >> ", accessToken, refreshToken);
+                        console.log("login success token created!!!! >> ", accessToken, refreshToken);
                         // commit("SET_IS_LOGIN", true);
                         // commit("SET_IS_LOGIN_ERROR", false);
                         // commit("SET_IS_VALID_TOKEN", true);
@@ -84,14 +61,14 @@ export const userStore = defineStore({
 
         async getUserInfo({ dispatch }, token) {
             let decodeToken = jwtDecode(token);
-            // console.log("2. getUserInfo() decodeToken :: ", decodeToken);
+            console.log("2. getUserInfo() decodeToken :: ", decodeToken);
             await findById(
                 decodeToken.userid,
                 ({ data }) => {
                     if (data.message === "success") {
                         // commit("SET_USER_INFO", data.userInfo);
                         this.setUserInfo(data.userInfo);
-                        // console.log("3. getUserInfo data >> ", data);
+                        console.log("3. getUserInfo data >> ", data);
                     } else {
                         console.log("유저 정보 없음!!!!");
                     }

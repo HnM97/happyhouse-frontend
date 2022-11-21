@@ -29,8 +29,8 @@ listNotice(
         for (let index = 0; index < data.length; index++) {
             articles.push(data[index]);
         }
-        // console.log("NoticeList articles \\> ");
-        // console.log(articles);
+        console.log("NoticeList articles \\> ");
+        console.log(articles[0]);
     },
     (error) => {
         console.log(error);
@@ -54,7 +54,7 @@ console.log(articles);
             </tr>
         </thead>
         <tbody>
-            <NoticeListItem :articles="articles" :pgno="pgno" />
+            <NoticeListItem :articles="articles" :pgno="param.pgno" />
         </tbody>
     </table>
 </template>

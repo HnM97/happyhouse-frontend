@@ -24,7 +24,10 @@ const route = useRoute();
 
 let paramArticleno = route.params.articleno;
 let paramPgno = route.params.pgno;
-console.log(paramPgno);
+
+console.log("NoticeDetail paramArticleno : " + paramArticleno);
+console.log("NoticeDetail paramPgno : " + paramPgno);
+
 getNotice(
     paramArticleno,
     ({ data }) => {
@@ -55,8 +58,8 @@ const article = reactive({
 });
 
 const message = computed(() => {
-    if (article.content.value) {
-        return article.content.value.split("/n").join("<br>");
+    if (article.content) {
+        return article.content.split("/n").join("<br>");
     }
 });
 
@@ -69,12 +72,6 @@ function moveModifyNotice() {
         name: "noticemodify",
         params: {
             articleno: article.articleno,
-            userid: article.userid,
-            userName: article.userName,
-            subject: article.subject,
-            content: article.content,
-            hit: article.hit,
-            registerTime: article.registerTime,
             pgno: paramPgno,
         },
     });
@@ -86,6 +83,7 @@ function deleteThisNotice() {
         deleteNotice(
             param,
             ({ data }) => {
+                console.log(data);
                 let msg = "삭제 처리시 문제가 발생했습니다.";
                 if (data === "success") {
                     msg = "삭제가 완료되었습니다.";

@@ -7,7 +7,8 @@ function listNotice(param, success, fail) {
 }
 
 function writeNotice(article, success, fail) {
-    api.post(`/notice`, JSON.stringify(article)).then(success).catch(fail);
+    alert("3api notice.js writeNotice: " + JSON.stringify(article));
+    api.post(`/notice/notices`, JSON.stringify(article)).then(success).catch(fail);
 }
 
 function getNotice(articleno, success, fail) {
@@ -15,7 +16,7 @@ function getNotice(articleno, success, fail) {
 }
 
 function modifyNotice(article, success, fail) {
-    alert("api notice.js : " + JSON.stringify(article));
+    alert("3api notice.js modifyNotice: " + JSON.stringify(article));
     api.put(`/notice/notices`, JSON.stringify(article)).then(success).catch(fail);
 }
 
