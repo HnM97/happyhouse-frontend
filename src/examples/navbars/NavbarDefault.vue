@@ -2,11 +2,14 @@
 import { RouterLink } from "vue-router";
 import { ref, watch } from "vue";
 import { useWindowsWidth } from "../../assets/js/useWindowsWidth";
+import { useMapStore } from "@/stores/MapStore.js";
 
 // images
 import ArrDark from "@/assets/img/down-arrow-dark.svg";
 import downArrow from "@/assets/img/down-arrow.svg";
 import DownArrWhite from "@/assets/img/down-arrow-white.svg";
+
+const store = useMapStore();
 
 const props = defineProps({
   action: {

@@ -52,7 +52,14 @@ defineProps({
     type: String,
     default: "",
   },
+  modelValue: {
+    type: String,
+    default: "",
+  },
 });
+
+defineEmits(["update:modelValue"]);
+
 function getClasses(size, success, error) {
   let sizeValue, isValidValue;
 
@@ -69,20 +76,18 @@ function getClasses(size, success, error) {
   return `${sizeValue} ${isValidValue}`;
 }
 </script>
+
 <template>
   <div class="input-group">
-    <label v-if="label" :class="label.class">{{
-      typeof label == "string" ? label : label.text
-    }}</label>
-    <span v-if="icon" class="input-group-text"
-      ><i class="fas" :class="`fa-${icon}`" aria-hidden="true"></i
-    ></span>
+    <label v-if="label" :class="label.class">{{ typeof label == "string" ? label : label.text }}</label>
+    <span v-if="icon" class="input-group-text"><i class="fas" :class="`fa-${icon}`" aria-hidden="true"></i></span>
     <input
       :id="id"
       :type="type"
       class="form-control"
       :class="[getClasses(size, success, error), inputClass]"
-      :value="value"
+      :value="modelValue"
+      @input="$emit('update:modelValue', $event.target.value)"
       :placeholder="placeholder"
       :isRequired="isRequired"
       :disabled="isDisabled"
