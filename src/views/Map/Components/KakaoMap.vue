@@ -4,6 +4,7 @@ import { useMapStore } from "@/stores/MapStore.js";
 import { storeToRefs } from "pinia";
 let map = null;
 const store = useMapStore();
+const markerUrl = "src/assets/img/map-marker.png";
 
 // const keyword = computed(() => {
 //   changeCenterByKeyword(store.getKeyword);
@@ -38,6 +39,8 @@ onMounted(() => {
   if (window.kakao && window.kakao.maps) {
     initMap();
   } else {
+    console.log("init, reset");
+    store.$reset();
     const mapScript = document.createElement("script");
     /* global kakao */
     mapScript.onload = () => kakao.maps.load(initMap);
@@ -51,11 +54,21 @@ function initMap() {
   const options = {
     center: new kakao.maps.LatLng(33.450701, 126.570667),
     level: 7,
+    mapTypeId: kakao.maps.MapTypeId.ROADMAP, // 지도종류
   };
   //지도 객체를 등록합니다.
   //지도 객체는 반응형 관리 대상이 아니므로 initMap에서 선언합니다.
   map = new kakao.maps.Map(container, options);
-  // changeCenterByKeyword(store.getKeyword);
+
+  // var roadviewContainer = document.getElementById("roadview");
+
+  // roadview.setPanoId(1050215189, placePosition);
+
+  // 새로고침 시 상태 유지
+  if (store.keyword != null) {
+    changeCenterByKeyword(store.keyword);
+    initCluster();
+  }
 }
 
 function initCluster() {
@@ -66,20 +79,38 @@ function initCluster() {
   const clusterer = new kakao.maps.MarkerClusterer({
     map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
     averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
-    minLevel: 3, // 클러스터 할 최소 지도 레벨
+    minLevel: 4, // 클러스터 할 최소 지도 레벨
   });
+
+  var imageSize = new kakao.maps.Size(50, 50), // 마커이미지의 크기입니다
+    imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+  var markerImage = new kakao.maps.MarkerImage(markerUrl, imageSize, imageOption);
+
   let markers = [];
   // console.log(store.aptList);
   const aptList = store.aptList;
   aptList.map((apt, index) => {
     markers.push(
       new kakao.maps.Marker({
+        image: markerImage,
         position: new kakao.maps.LatLng(apt.lat, apt.lng),
       })
     );
   });
   console.log("add markers in cluster");
   clusterer.addMarkers(markers);
+}
+
+// 지도와 로드뷰를 감싸고 있는 div의 class를 변경하여 지도를 숨기거나 보이게 하는 함수입니다
+function toggleMap(active) {
+  if (active) {
+    // 지도가 보이도록 지도와 로드뷰를 감싸고 있는 div의 class를 변경합니다
+    container.className = "view_map";
+  } else {
+    // 지도가 숨겨지도록 지도와 로드뷰를 감싸고 있는 div의 class를 변경합니다
+    container.className = "view_roadview";
+  }
 }
 
 function changeSize(size) {
@@ -93,9 +124,7 @@ function displayMarker(markerPositions) {
     data.markers.forEach((marker) => marker.setMap(null));
   }
 
-  const positions = markerPositions.map(
-    (position) => new kakao.maps.LatLng(...position)
-  );
+  const positions = markerPositions.map((position) => new kakao.maps.LatLng(...position));
 
   if (positions.length > 0) {
     data.markers = positions.map(
@@ -106,10 +135,7 @@ function displayMarker(markerPositions) {
         })
     );
 
-    const bounds = positions.reduce(
-      (bounds, latlng) => bounds.extend(latlng),
-      new kakao.maps.LatLngBounds()
-    );
+    const bounds = positions.reduce((bounds, latlng) => bounds.extend(latlng), new kakao.maps.LatLngBounds());
 
     map.setBounds(bounds);
   }
@@ -168,21 +194,26 @@ function changeCenterByKeyword(keyword) {
 </script>
 
 <template>
-  <div>
-    <div id="map"></div>
-    <div class="button-group">
+  <div id="map"></div>
+  <!-- <div id="container" class="view_map">
+    <div id="mapWrapper">
+      <div id="map"></div>
+      <input type="button" id="btnRoadview" onclick="toggleMap(false)" title="로드뷰 보기" value="로드뷰" />
+    </div>
+    <div id="rvWrapper" style="width: 100%; height: 300px; position: absolute; top: 0; left: 0">
+      <div id="roadview" style="height: 100%"></div>
+      
+      <input type="button" id="btnMap" onclick="toggleMap(true)" title="지도 보기" value="지도" />
+    </div>
+  </div> -->
+  <!-- <div class="button-group">
       <button @click="changeSize(0)">Hide</button>
       <button @click="changeSize(400)">show</button>
-      <button @click="displayMarker(data.markerPositions1)">
-        marker set 1
-      </button>
-      <button @click="displayMarker(data.markerPositions2)">
-        marker set 2
-      </button>
+      <button @click="displayMarker(data.markerPositions1)">marker set 1</button>
+      <button @click="displayMarker(data.markerPositions2)">marker set 2</button>
       <button @click="displayMarker([])">marker set 3 (empty)</button>
       <button @click="displayInfoWindow">infowindow</button>
-    </div>
-  </div>
+    </div> -->
 </template>
 
 <style scoped>
@@ -197,5 +228,41 @@ function changeCenterByKeyword(keyword) {
 
 button {
   margin: 0 3px;
+}
+
+#container {
+  overflow: hidden;
+  position: relative;
+}
+#btnRoadview,
+#btnMap {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  padding: 7px 12px;
+  font-size: 14px;
+  border: 1px solid #dbdbdb;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  z-index: 1;
+  cursor: pointer;
+}
+#btnRoadview:hover,
+#btnMap:hover {
+  background-color: #fcfcfc;
+  border: 1px solid #c1c1c1;
+}
+#container.view_map #mapWrapper {
+  z-index: 10;
+}
+#container.view_map #btnMap {
+  display: none;
+}
+#container.view_roadview #mapWrapper {
+  z-index: 0;
+}
+#container.view_roadview #btnRoadview {
+  display: none;
 }
 </style>

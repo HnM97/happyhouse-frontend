@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
+import { ref, reactive } from "vue";
 import { keywordToReg, searchApt } from "@/api/map.js";
 export const useMapStore = defineStore("useMapStore", {
+  persist: true,
   state: () => ({
     keyword: "",
     params: {
@@ -11,6 +13,9 @@ export const useMapStore = defineStore("useMapStore", {
   getters: {
     getKeyword(state) {
       return state.keyword;
+    },
+    getAptList(state) {
+      return state.aptList;
     },
   },
   actions: {
@@ -34,7 +39,7 @@ export const useMapStore = defineStore("useMapStore", {
         params,
         ({ data }) => {
           this.aptList = data;
-          console.log(data);
+          console.log(this.aptList);
         },
         (error) => {
           console.log(error);
