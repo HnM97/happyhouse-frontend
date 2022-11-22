@@ -17,30 +17,28 @@ import setMaterialInput from "@/assets/js/material-input";
 
 import { userStore } from "@/stores/UserStore.js";
 
+const store = userStore();
+
 onMounted(() => {
     setMaterialInput();
 });
 
 const user = reactive({
-    userid: "",
-    userpwd: "",
+    userId: "",
+    userPwd: "",
 });
 
-const isLogin = computed(() => userStore.isLogin);
-// const isLoginError = computed(() => userStore.isLoginError);
-const userInfo = computed(() => userStore.userInfo);
-console.log("userInfo : \\>");
-console.log(userInfo.value);
+const isLogin = computed(() => store.isLogin);
+// const isLoginError = computed(() => store.isLoginError);
+const userInfo = computed(() => store.userInfo);
 
 async function login() {
-    alert(JSON.stringify(user));
-    await userStore.userConfirm(user);
-    alert("hi");
+    await store.userConfirm(user);
     let token = sessionStorage.getItem("access-token");
-    alert("1. confirm() token >> " + token);
-    if (isLogin) {
-        await userStore.getUserInfo(token);
-        console.log("4. confirm() userInfo :: ", userInfo);
+    // alert("UserLogin 1. confirm() token >> " + token);
+    if (isLogin.value) {
+        await store.getUserInfo(token);
+        // console.log("4. confirm() userInfo :: ", userInfo);
         Router.push({ name: "home" });
     }
 }
@@ -62,14 +60,14 @@ function movepage() {
                         <form role="form" class="text-start">
                             <MaterialInput
                                 id="userid"
-                                v-model="user.userid"
+                                v-model="user.userId"
                                 class="input-group-outline mb-3"
                                 :label="{ text: '아이디', class: 'form-label' }"
                                 type="text"
                             />
                             <MaterialInput
                                 id="userpwd"
-                                v-model="user.userpwd"
+                                v-model="user.userPwd"
                                 class="input-group-outline mb-3"
                                 :label="{ text: '비밀번호', class: 'form-label' }"
                                 type="password"
@@ -89,7 +87,7 @@ function movepage() {
                                     variant="gradient"
                                     color="dark"
                                     fullWidth
-                                    @click="login"
+                                    @click.prevent="login"
                                 >
                                     로그인
                                 </MaterialButton>

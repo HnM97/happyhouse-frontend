@@ -19,14 +19,13 @@ import notice from "@/assets/img/notice.jpg";
 import Router from "@/router";
 import { useRoute } from "vue-router";
 import { getNotice, deleteNotice } from "@/api/notice";
+import { noticeStore } from "@/stores/NoticeStore.js";
 
 const route = useRoute();
+const store = noticeStore();
 
 let paramArticleno = route.params.articleno;
 let paramPgno = route.params.pgno;
-
-console.log("NoticeDetail paramArticleno : " + paramArticleno);
-console.log("NoticeDetail paramPgno : " + paramPgno);
 
 getNotice(
     paramArticleno,
@@ -37,6 +36,8 @@ getNotice(
         article.content = data.content;
         article.hit = data.hit;
         article.registerTime = data.registerTime;
+        store.setNotice(article);
+        store.setPgno(paramPgno);
     },
     (error) => {
         console.log(error);
@@ -83,7 +84,6 @@ function deleteThisNotice() {
         deleteNotice(
             param,
             ({ data }) => {
-                console.log(data);
                 let msg = "삭제 처리시 문제가 발생했습니다.";
                 if (data === "success") {
                     msg = "삭제가 완료되었습니다.";

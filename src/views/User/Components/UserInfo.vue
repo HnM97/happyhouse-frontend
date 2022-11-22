@@ -17,14 +17,15 @@ import setMaterialInput from "@/assets/js/material-input";
 import { userStore } from "@/stores/UserStore.js";
 import { computed } from "@vue/reactivity";
 
-const userinfo = computed(() => userStore.userinfo);
+const store = userStore();
+const userInfo = computed(() => store.userInfo);
 
 onMounted(() => {
     setMaterialInput();
 });
 
 function movehome() {
-    Router.push("/");
+    Router.push({ name: "home" });
 }
 
 function modify() {
@@ -47,31 +48,35 @@ function deleteuser() {
                     </div>
                     <div class="card-body">
                         <form role="form" class="text-start">
+                            <div class="mb-1">NAME</div>
                             <MaterialInput
                                 id="name"
                                 class="input-group-outline mb-3"
-                                :label="{ text: `${userinfo.username}`, class: 'form-label' }"
+                                :label="{ text: `${userInfo.userName}`, class: 'form-label' }"
                                 type="text"
                                 isDisabled
                             />
+                            <div class="mb-1">ID</div>
                             <MaterialInput
                                 id="id"
                                 class="input-group-outline mb-3"
-                                :label="{ text: `${userinfo.userid}`, class: 'form-label' }"
+                                :label="{ text: `${userInfo.userId}`, class: 'form-label' }"
                                 type="text"
                                 isDisabled
                             />
-                            <MaterialInput
+                            <!-- <div class="mb-1">PASSWORD</div> -->
+                            <!-- <MaterialInput
                                 id="password"
                                 class="input-group-outline mb-3"
-                                :label="{ text: `${userinfo.password}`, class: 'form-label' }"
+                                :label="{ text: `${userInfo.userPwd}`, class: 'form-label' }"
                                 type="password"
                                 isDisabled
-                            />
+                            /> -->
+                            <div class="mb-1">EMAIL</div>
                             <MaterialInput
                                 id="email"
-                                class="input-group-outline my-3"
-                                :label="{ text: `${userinfo.email}`, class: 'form-label' }"
+                                class="input-group-outline mb-3"
+                                :label="{ text: `${userInfo.email}`, class: 'form-label' }"
                                 type="email"
                                 isDisabled
                             />
@@ -92,7 +97,7 @@ function deleteuser() {
                                         variant="gradient"
                                         color="dark"
                                         fullWidth
-                                        @click="modify"
+                                        @click.prevent="modify"
                                     >
                                         수정
                                     </MaterialButton>

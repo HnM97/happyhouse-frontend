@@ -1,5 +1,7 @@
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, reactive, watch } from "vue";
+import { join } from "@/api/user";
+import Router from "@/router";
 
 // example components
 import DefaultNavbar from "@/examples/navbars/NavbarDefault.vue";
@@ -16,7 +18,42 @@ onMounted(() => {
     setMaterialInput();
 });
 
-function onSubmit() {}
+const user = reactive({
+    userId: "",
+    userName: "",
+    userPwd: "",
+    userPwdCheck: "",
+    email: "",
+});
+
+async function onSubmit() {
+    if (!user.userId || !user.userName || !user.userPwd || !user.userPwdCheck || !user.email) {
+    }
+    if (user.userPwd !== user.userPwdCheck) {
+        alert("비밀번호가 일치하지 않습니다");
+        user.userPwd = "";
+        user.userPwdCheck = "";
+    } else {
+        const emailsplit = user.email.split("@");
+        const param = {
+            userId: user.userId,
+            userName: user.userName,
+            userPwd: user.userPwd,
+            emailId: emailsplit[0],
+            emailDomain: emailsplit[1],
+        };
+        await join(
+            param,
+            ({ data }) => {
+                alert("회원가입이 완료되었습니다\n환영합니다!");
+                Router.push({ name: "login" });
+            },
+            (error) => {
+                console.log(error);
+            }
+        );
+    }
+}
 </script>
 <template>
     <div class="container my-auto">
@@ -32,30 +69,35 @@ function onSubmit() {}
                         <form role="form" class="text-start">
                             <MaterialInput
                                 id="name"
+                                v-model="user.userName"
                                 class="input-group-outline mb-3"
                                 :label="{ text: '이름', class: 'form-label' }"
                                 type="text"
                             />
                             <MaterialInput
                                 id="id"
+                                v-model="user.userId"
                                 class="input-group-outline mb-3"
                                 :label="{ text: '아이디', class: 'form-label' }"
                                 type="text"
                             />
                             <MaterialInput
                                 id="password"
+                                v-model="user.userPwd"
                                 class="input-group-outline mb-3"
                                 :label="{ text: '비밀번호', class: 'form-label' }"
                                 type="password"
                             />
                             <MaterialInput
                                 id="password-check"
+                                v-model="user.userPwdCheck"
                                 class="input-group-outline mb-3"
                                 :label="{ text: '비밀번호 확인', class: 'form-label' }"
                                 type="password"
                             />
                             <MaterialInput
                                 id="email"
+                                v-model="user.email"
                                 class="input-group-outline my-3"
                                 :label="{ text: '이메일', class: 'form-label' }"
                                 type="email"
@@ -67,7 +109,7 @@ function onSubmit() {}
                                     variant="gradient"
                                     color="dark"
                                     fullWidth
-                                    @click="onSubmit"
+                                    @click.prevent="onSubmit"
                                 >
                                     회원가입
                                 </MaterialButton>

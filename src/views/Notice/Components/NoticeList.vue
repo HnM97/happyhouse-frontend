@@ -29,16 +29,11 @@ listNotice(
         for (let index = 0; index < data.length; index++) {
             articles.push(data[index]);
         }
-        console.log("NoticeList articles \\> ");
-        console.log(articles[0]);
     },
     (error) => {
         console.log(error);
     }
 );
-
-console.log("NoticeList articles \\> ");
-console.log(articles);
 </script>
 <template>
     <table class="table align-items-center my-4 mt-2">

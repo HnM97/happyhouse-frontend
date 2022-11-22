@@ -3,12 +3,18 @@ import Router from "@/router";
 import { login, findById, tokenRegeneration, logout } from "@/api/user";
 import { defineStore } from "pinia";
 
-export const userStore = defineStore({
-    // namespaced: true,
+export const userStore = defineStore("userStore", {
+    persist: true,
+
     state: () => ({
         isLogin: false,
         isLoginError: false,
-        userInfo: "ssafy",
+        userInfo: {
+            userName: "",
+            userId: "",
+            userPwd: "",
+            email: "",
+        },
         isValidToken: false,
     }),
 
@@ -23,19 +29,29 @@ export const userStore = defineStore({
             this.isValidToken = isValidToken;
         },
         setUserInfo(userInfo) {
-            this.isLogin = true;
-            this.userInfo = userInfo;
+            if (userInfo === null) {
+                this.userInfo.userName = "";
+                this.userInfo.userId = "";
+                this.userInfo.userPwd = "";
+                this.userInfo.email = "";
+            } else {
+                this.userInfo.userName = userInfo.userName;
+                this.userInfo.userId = userInfo.userId;
+                this.userInfo.userPwd = userInfo.userPwd;
+                this.userInfo.email = userInfo.email;
+            }
         },
 
         async userConfirm(user) {
-            alert("hi");
+            // alert("userStore userConfirm");
             await login(
                 user,
                 ({ data }) => {
                     if (data.message === "success") {
                         let accessToken = data["access-token"];
                         let refreshToken = data["refresh-token"];
-                        console.log("login success token created!!!! >> ", accessToken, refreshToken);
+                        // console.log("userStore login success token created!!!! >> ", accessToken, refreshToken);
+
                         // commit("SET_IS_LOGIN", true);
                         // commit("SET_IS_LOGIN_ERROR", false);
                         // commit("SET_IS_VALID_TOKEN", true);
@@ -59,16 +75,26 @@ export const userStore = defineStore({
             );
         },
 
-        async getUserInfo({ dispatch }, token) {
+        async getUserInfo(token) {
+            // alert("userStore getUserInfo");
             let decodeToken = jwtDecode(token);
-            console.log("2. getUserInfo() decodeToken :: ", decodeToken);
+            // console.log("userStore 2. getUserInfo() decodeToken :: ", decodeToken);
             await findById(
                 decodeToken.userid,
                 ({ data }) => {
+                    // alert("userStore getUserInfo findById");
                     if (data.message === "success") {
+                        // console.log("userStore 3. getUserInfo data >> ", data);
+                        const email = data.userInfo.emailId + "@" + data.userInfo.emailDomain;
+                        const dataUserInfo = {
+                            userName: data.userInfo.userName,
+                            userId: data.userInfo.userId,
+                            userPwd: data.userInfo.userPwd,
+                            email: email,
+                        };
+
                         // commit("SET_USER_INFO", data.userInfo);
-                        this.setUserInfo(data.userInfo);
-                        console.log("3. getUserInfo data >> ", data);
+                        this.setUserInfo(dataUserInfo);
                     } else {
                         console.log("유저 정보 없음!!!!");
                     }
@@ -77,7 +103,7 @@ export const userStore = defineStore({
                     console.log("getUserInfo() error code [토큰 만료되어 사용 불가능.] ::: ", error.response.status);
                     // commit("SET_IS_VALID_TOKEN", false);
                     this.setIsValidToken(false);
-                    await dispatch("tokenRegeneration");
+                    // await dispatch("tokenRegeneration");
                 }
             );
         },

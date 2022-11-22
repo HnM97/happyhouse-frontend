@@ -21,77 +21,70 @@ import regist from "@/assets/img/regist.jpg";
 import Router from "@/router";
 import { useRoute } from "vue-router";
 import { getNotice, modifyNotice } from "@/api/notice";
+import { noticeStore } from "@/stores/NoticeStore.js";
+import { computed } from "@vue/reactivity";
 
 // console.log();
-
+const store = noticeStore();
 const route = useRoute();
 let paramArticleno = route.params.articleno;
 let paramPgno = route.params.pgno;
-console.log("NoticeModify paramArticleno : " + paramArticleno);
-console.log("NoticeModify paramPgno : " + paramPgno);
 
-getNotice(
-    paramArticleno,
-    ({ data }) => {
-        article.articleno = data.articleNo;
-        article.userid = data.userId;
-        article.username = data.userName;
-        article.subject = data.subject;
-        article.content = data.content;
-        article.hit = data.hit;
-        article.registerTime = data.registerTime;
-        console.log("NoticeModify getNotice article : \\>");
-        console.log(article);
-    },
-    (error) => {
-        console.log(error);
-    }
-);
+// getNotice(
+//     paramArticleno,
+//     ({ data }) => {
+//         article.articleno = data.articleNo;
+//         article.userid = data.userId;
+//         article.username = data.userName;
+//         article.subject = data.subject;
+//         article.content = data.content;
+//         article.hit = data.hit;
+//         article.registerTime = data.registerTime;
+//         console.log("NoticeModify getNotice article : \\>");
+//         console.log(article);
+//     },
+//     (error) => {
+//         console.log(error);
+//     }
+// );
 
 onMounted(() => {
     setMaterialInput();
 });
 
+const notice = store.notice;
+
 const article = reactive({
-    articleno: 0,
-    userid: "관리자 id",
-    username: "관리자 이름",
-    subject: "default subject",
-    content: "default content",
-    hit: 0,
-    registerTime: null,
+    articleno: notice.articleno,
+    userid: notice.userid,
+    username: notice.username,
+    subject: notice.subject,
+    content: notice.content,
+    hit: notice.hit,
+    registertime: notice.registertime,
 });
 
-console.log("NoticeModify article : \\>");
-console.log(article);
+article.subject = notice.subject;
 
-function modify() {
+async function modify() {
     let params = {
-        articleNo: article.articleno,
+        articleno: article.articleno,
         userId: article.userid,
-        userName: null,
         subject: article.subject,
         content: article.content,
-        hit: null,
-        registerTime: null,
     };
-    alert("1NoticeModify modify article.subject : " + JSON.stringify(article));
-    alert("2NoticeModify modify params.subject : " + JSON.stringify(params));
-    modifyNotice(
+
+    await modifyNotice(
         params,
         ({ data }) => {
-            alert("4NoticeModify modifyNotice: " + data);
             let msg = "수정 처리시 문제가 발생했습니다.";
             if (data === "success") {
                 msg = "수정이 완료되었습니다.";
             }
             alert(msg);
-            // 현재 route를 /list로 변경.
-            // moveList();
-            // movedetail();
+            movedetail();
         },
         (error) => {
-            console.log("no");
             console.log(error);
         }
     );
@@ -102,12 +95,7 @@ function movedetail() {
 }
 
 function movelist() {
-    Router.push("/notice");
-}
-
-function test() {
-    console.log("article.subject: " + article.subject);
-    // console.log("params.subject: " + params.subject);
+    Router.push({ name: "notice", params: { pgno: paramPgno } });
 }
 </script>
 <template>
@@ -142,7 +130,6 @@ function test() {
                                                     type="text"
                                                     placeholder="제목을 입력하세요"
                                                     v-model="article.subject"
-                                                    @keyup="test"
                                                 />
                                             </div>
                                             <div class="my-2 mb-4">
@@ -178,7 +165,7 @@ function test() {
                                                     class="m-1 mb-0"
                                                     variant="outline"
                                                     color="success"
-                                                    @click="modify"
+                                                    @click.prevent="modify"
                                                     >수정</MaterialButton
                                                 >
                                                 <MaterialButton

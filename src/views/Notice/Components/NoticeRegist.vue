@@ -24,9 +24,9 @@ import { userStore } from "@/stores/UserStore.js";
 import { computed } from "@vue/reactivity";
 import { writeNotice } from "@/api/notice";
 
-const userid = ref(null);
-const subject = ref(null);
-const content = ref(null);
+// const userid = ref(null);
+// const subject = ref(null);
+// const content = ref(null);
 
 onMounted(() => {
     setMaterialInput();
@@ -77,12 +77,12 @@ async function registNotice() {
         ({ data }) => {
             console.log("4NoticeRegist writeNotice: " + data);
             alert("4NoticeRegist writeNotice: " + data);
-            // let msg = "등록 처리시 문제가 발생했습니다.";
-            // if (data === "success") {
-            //     msg = "등록이 완료되었습니다.";
-            // }
-            // alert(msg);
-            // this.moveList();
+            let msg = "등록 처리시 문제가 발생했습니다.";
+            if (data === "success") {
+                msg = "등록이 완료되었습니다.";
+            }
+            alert(msg);
+            movelist();
         },
         (error) => {
             alert(error);
@@ -140,7 +140,6 @@ function test() {
                                                         class="input-group-static mb-4"
                                                         label="Subject"
                                                         type="text"
-                                                        ref="subject"
                                                         placeholder="제목을 입력하세요"
                                                         v-model="article.subject"
                                                         @keyup="test"
@@ -151,7 +150,6 @@ function test() {
                                                         class="input-group-static mb-4"
                                                         label="Name"
                                                         type="text"
-                                                        ref="userid"
                                                         v-model="userinfo"
                                                         isDisabled
                                                     />
@@ -161,7 +159,6 @@ function test() {
                                                         class="input-group-static mb-4"
                                                         placeholder="내용을 입력하세요"
                                                         :rows="6"
-                                                        ref="content"
                                                         v-model="article.content"
                                                         @keyup="test"
                                                         >Notice content</MaterialTextArea
@@ -181,7 +178,7 @@ function test() {
                                                         class="m-1 mb-0"
                                                         variant="outline"
                                                         color="success"
-                                                        @click="registNotice"
+                                                        @click.prevent="registNotice"
                                                         >작성</MaterialButton
                                                     >
                                                     <MaterialButton
