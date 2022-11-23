@@ -1,39 +1,25 @@
 <script setup>
-import { listNotice } from "@/api/notice";
 import NoticeListItem from "@/views/Notice/Components/NoticeListItem.vue";
 import { reactive } from "vue";
+import { useNoticeStore } from "@/stores/NoticeStore.js";
+
+const noticeStore = useNoticeStore();
 
 const headers = ["글번호", "제목", "작성자", "작성일", "조회수"];
-// const rows = [
-//     {
-//         articleno: 1,
-//         userid: "test",
-//         subject: "testtesttest",
-//         hit: 1,
-//         registertime: "2022-11-16",
-//     },
-// ];
-
 const articles = reactive([]);
+list();
 
 let param = {
-    pgno: 1,
+    pg: 1,
     spp: 20,
+    start: null,
     key: null,
     word: null,
 };
 
-listNotice(
-    param,
-    ({ data }) => {
-        for (let index = 0; index < data.length; index++) {
-            articles.push(data[index]);
-        }
-    },
-    (error) => {
-        console.log(error);
-    }
-);
+async function list() {
+    await noticeStore.writeNoticeContent(param);
+}
 </script>
 <template>
     <table class="table align-items-center my-4 mt-2">
@@ -49,7 +35,17 @@ listNotice(
             </tr>
         </thead>
         <tbody>
-            <NoticeListItem :articles="articles" :pgno="param.pgno" />
+            <tr v-for="({ articleNo, subject, userId, registerTime, hit }, index) of articles" :key="index">
+                <NoticeListItem
+                    :articleNo="articleNo"
+                    :subject="subject"
+                    :userId="userId"
+                    :registerTime="registerTime"
+                    :hit="hit"
+                    :pgno="param.pgno"
+                    :index="articles.length - index"
+                />
+            </tr>
         </tbody>
     </table>
 </template>

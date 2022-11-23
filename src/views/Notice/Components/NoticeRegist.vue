@@ -20,92 +20,54 @@ import regist from "@/assets/img/regist.jpg";
 
 import Router from "@/router";
 
-import { userStore } from "@/stores/UserStore.js";
+import { useUserStore } from "@/stores/UserStore.js";
+import { useNoticeStore } from "@/stores/NoticeStore.js";
 import { computed } from "@vue/reactivity";
-import { writeNotice } from "@/api/notice";
 
-// const userid = ref(null);
-// const subject = ref(null);
-// const content = ref(null);
+const userStore = useUserStore();
+const noticeStore = useNoticeStore();
 
 onMounted(() => {
     setMaterialInput();
 });
 
-const userinfo = computed(() => userStore.userInfo);
-// console.log(userinfo);
+const userInfo = userStore.userInfo;
 
 const article = reactive({
     articleno: 0,
-    userid: "ssafy",
+    userId: userInfo.userId,
     subject: "",
     content: "",
 });
-console.log("NoticeRegist article.subject: " + article.subject);
 
-const isUserid = ref(false);
-
-function movelist() {
-    Router.push("/notice");
-}
-
-function onSubmit(event) {
-    event.preventDefault();
-    alert("1NoticeRegist onSubmit: " + JSON.stringify(article));
-    let err = true;
-    let msg = "";
-    !article.userid && ((msg = "작성자 입력해주세요"), (err = false), userid.focus());
-    err && !article.subject && ((msg = "제목 입력해주세요"), (err = false), subject.focus());
-    err && !article.content && ((msg = "내용 입력해주세요"), (err = false), content.focus());
-
-    if (!err) alert(msg);
-    else registNotice();
-}
-
-async function registNotice() {
-    article.userid = "ssafy";
+async function onSubmit() {
+    if (!article.subject) {
+        alert("제목을 입력하세요");
+        return;
+    } else if (!article.content) {
+        alert("내용을 입력하세요");
+        return;
+    }
     let param = {
-        userId: article.userid,
+        userId: article.userId,
         subject: article.subject,
         content: article.content,
     };
-
-    console.log("param : " + JSON.stringify(param));
-    alert("2NoticeRegist registNotice: " + JSON.stringify(param));
-    await writeNotice(
-        param,
-        ({ data }) => {
-            console.log("4NoticeRegist writeNotice: " + data);
-            alert("4NoticeRegist writeNotice: " + data);
-            let msg = "등록 처리시 문제가 발생했습니다.";
-            if (data === "success") {
-                msg = "등록이 완료되었습니다.";
-            }
-            alert(msg);
-            movelist();
-        },
-        (error) => {
-            alert(error);
-            console.log(error);
-        }
-    );
+    await noticeStore.writeNoticeContent(param);
+    movelist();
 }
 
-function onReset(event) {
-    event.preventDefault();
-    article.articleno = 0;
+function onReset() {
     article.subject = "";
     article.content = "";
-    // this.moveList();
 }
-function test() {
-    console.log("NoticeRegist article.subject: " + article.subject);
-    console.log("NoticeRegist article.content: " + article.content);
+
+function movelist() {
+    Router.push({ name: "noticelist" });
 }
 </script>
 
 <template>
-    <!-- <div v-if="userinfo"> -->
     <div>
         <Header>
             <div
@@ -150,7 +112,7 @@ function test() {
                                                         class="input-group-static mb-4"
                                                         label="Name"
                                                         type="text"
-                                                        v-model="userinfo"
+                                                        v-model="article.userId"
                                                         isDisabled
                                                     />
                                                 </div>
@@ -178,14 +140,14 @@ function test() {
                                                         class="m-1 mb-0"
                                                         variant="outline"
                                                         color="success"
-                                                        @click.prevent="registNotice"
+                                                        @click.prevent="onSubmit"
                                                         >작성</MaterialButton
                                                     >
                                                     <MaterialButton
                                                         class="m-1 mb-0"
                                                         variant="outline"
                                                         color="danger"
-                                                        @click="onReset"
+                                                        @click.prevent="onReset"
                                                         >취소</MaterialButton
                                                     >
                                                 </div>

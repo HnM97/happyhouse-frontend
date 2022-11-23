@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, watch } from "vue";
+import { onMounted, reactive } from "vue";
 import { join } from "@/api/user";
 import Router from "@/router";
 
@@ -14,6 +14,7 @@ import MaterialButton from "@/components/MaterialButton.vue";
 
 // material-input
 import setMaterialInput from "@/assets/js/material-input";
+
 onMounted(() => {
     setMaterialInput();
 });
@@ -27,8 +28,23 @@ const user = reactive({
 });
 
 async function onSubmit() {
-    if (!user.userId || !user.userName || !user.userPwd || !user.userPwdCheck || !user.email) {
+    if (!user.userId) {
+        alert("아이디를 입력하세요");
+        return;
+    } else if (!user.userName) {
+        alert("이름을 입력하세요");
+        return;
+    } else if (!user.userPwd) {
+        alert("비밀번호를 입력하세요");
+        return;
+    } else if (!user.userPwdCheck) {
+        alert("비밀번호 확인을 입력하세요");
+        return;
+    } else if (!user.email) {
+        alert("이메일을 입력하세요");
+        return;
     }
+
     if (user.userPwd !== user.userPwdCheck) {
         alert("비밀번호가 일치하지 않습니다");
         user.userPwd = "";
@@ -49,7 +65,13 @@ async function onSubmit() {
                 Router.push({ name: "login" });
             },
             (error) => {
-                console.log(error);
+                alert("이미 가입된 정보이거나 잘못된 정보입니다\n다시 가입해주세요");
+                user.userId = "";
+                user.userName = "";
+                user.userPwd = "";
+                user.userPwdCheck = "";
+                user.email = "";
+                location.reload();
             }
         );
     }

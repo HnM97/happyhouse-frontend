@@ -19,10 +19,12 @@ import notice from "@/assets/img/notice.jpg";
 import Router from "@/router";
 import { useRoute } from "vue-router";
 import { getNotice, deleteNotice } from "@/api/notice";
-import { noticeStore } from "@/stores/NoticeStore.js";
+import { useNoticeStore } from "@/stores/NoticeStore.js";
+import { useUserStore } from "@/stores/UserStore.js";
 
 const route = useRoute();
-const store = noticeStore();
+const noticeStore = useNoticeStore();
+const userStore = useUserStore();
 
 let paramArticleno = route.params.articleno;
 let paramPgno = route.params.pgno;
@@ -36,8 +38,8 @@ getNotice(
         article.content = data.content;
         article.hit = data.hit;
         article.registerTime = data.registerTime;
-        store.setNotice(article);
-        store.setPgno(paramPgno);
+        noticeStore.setNotice(article);
+        noticeStore.setPgno(paramPgno);
     },
     (error) => {
         console.log(error);
@@ -79,6 +81,10 @@ function moveModifyNotice() {
     //   this.$router.push({ path: `/board/modify/${this.article.articleno}` });
 }
 function deleteThisNotice() {
+    if (userStore.userInfo.userId !== "관리자") {
+        alert("관리자만 접근이 가능합니다");
+        return;
+    }
     if (confirm("글을 삭제하시겠습니까?")) {
         const param = { articleno: paramArticleno, pgno: paramPgno };
         deleteNotice(
@@ -89,19 +95,12 @@ function deleteThisNotice() {
                     msg = "삭제가 완료되었습니다.";
                 }
                 alert(msg);
-                // 현재 route를 /list로 변경.
                 Router.push({ name: "noticelist" });
             },
             (error) => {
                 console.log(error);
             }
         );
-
-        // 삭제 페이지 없이 alert 띄우고 넘어갈 거임
-        // Router.replace({
-        //     name: "noticedelete",
-        //     params: { articleno: article.articleno, pgno: paramPgno },
-        // });
     }
 }
 </script>

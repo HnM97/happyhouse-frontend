@@ -20,39 +20,22 @@ import regist from "@/assets/img/regist.jpg";
 
 import Router from "@/router";
 import { useRoute } from "vue-router";
-import { getNotice, modifyNotice } from "@/api/notice";
-import { noticeStore } from "@/stores/NoticeStore.js";
+import { modifyNotice } from "@/api/notice";
+import { useNoticeStore } from "@/stores/NoticeStore.js";
 import { computed } from "@vue/reactivity";
 
 // console.log();
-const store = noticeStore();
+const noticeStore = useNoticeStore();
 const route = useRoute();
+
 let paramArticleno = route.params.articleno;
 let paramPgno = route.params.pgno;
-
-// getNotice(
-//     paramArticleno,
-//     ({ data }) => {
-//         article.articleno = data.articleNo;
-//         article.userid = data.userId;
-//         article.username = data.userName;
-//         article.subject = data.subject;
-//         article.content = data.content;
-//         article.hit = data.hit;
-//         article.registerTime = data.registerTime;
-//         console.log("NoticeModify getNotice article : \\>");
-//         console.log(article);
-//     },
-//     (error) => {
-//         console.log(error);
-//     }
-// );
 
 onMounted(() => {
     setMaterialInput();
 });
 
-const notice = store.notice;
+const notice = noticeStore.notice;
 
 const article = reactive({
     articleno: notice.articleno,
@@ -63,8 +46,6 @@ const article = reactive({
     hit: notice.hit,
     registertime: notice.registertime,
 });
-
-article.subject = notice.subject;
 
 async function modify() {
     let params = {
