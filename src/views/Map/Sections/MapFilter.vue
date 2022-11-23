@@ -18,5 +18,5 @@ function handleSearch() {
 </script>
 
 <template>
-  <MapFilterBar class="text-center bg-body" :checks="checks" :conditions="conditions" />
+  <MapFilterBar v-model="keyword" class="text-center bg-body" :checks="checks" :conditions="conditions" />
 </template>
