@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, toRefs } from "vue";
+import { onMounted, onUpdated, reactive } from "vue";
 
 //example components
 import NavbarDefault from "@/examples/navbars/NavbarDefault.vue";
@@ -21,58 +21,60 @@ import regist from "@/assets/img/regist.jpg";
 import Router from "@/router";
 import { useRoute } from "vue-router";
 import { getNotice, modifyNotice } from "@/api/notice";
+import { noticeStore } from "@/stores/NoticeStore.js";
+import { computed } from "@vue/reactivity";
 
 // console.log();
-
+const store = noticeStore();
 const route = useRoute();
 let paramArticleno = route.params.articleno;
 let paramPgno = route.params.pgno;
 
-getNotice(
-    paramArticleno,
-    ({ data }) => {
-        article.articleno = data.articleNo;
-        article.userid = data.userId;
-        article.username = data.userName;
-        article.subject = data.subject;
-        article.content = data.content;
-        article.hit = data.hit;
-        article.registerTime = data.registerTime;
-        console.log(article);
-    },
-    (error) => {
-        console.log(error);
-    }
-);
+// getNotice(
+//     paramArticleno,
+//     ({ data }) => {
+//         article.articleno = data.articleNo;
+//         article.userid = data.userId;
+//         article.username = data.userName;
+//         article.subject = data.subject;
+//         article.content = data.content;
+//         article.hit = data.hit;
+//         article.registerTime = data.registerTime;
+//         console.log("NoticeModify getNotice article : \\>");
+//         console.log(article);
+//     },
+//     (error) => {
+//         console.log(error);
+//     }
+// );
 
 onMounted(() => {
     setMaterialInput();
 });
 
-////////////////// 반응하지 않음 ㅜㅜ
+const notice = store.notice;
+
 const article = reactive({
-    articleno: 0,
-    userid: "관리자 id",
-    username: "관리자 이름",
-    subject: "default subject",
-    content: "default content",
-    hit: 0,
-    registerTime: null,
+    articleno: notice.articleno,
+    userid: notice.userid,
+    username: notice.username,
+    subject: notice.subject,
+    content: notice.content,
+    hit: notice.hit,
+    registertime: notice.registertime,
 });
-console.log(article);
-console.log("NoticeModify article.articleno : " + article.articleno);
-console.log("NoticeModify article.hit : " + article.hit);
-console.log("NoticeModify article.content : " + article.content);
 
-let params = {
-    articleno: article.articleno,
-    userid: article.userid,
-    subject: article.subject,
-    content: article.content,
-};
+article.subject = notice.subject;
 
-function modify() {
-    modifyNotice(
+async function modify() {
+    let params = {
+        articleno: article.articleno,
+        userId: article.userid,
+        subject: article.subject,
+        content: article.content,
+    };
+
+    await modifyNotice(
         params,
         ({ data }) => {
             let msg = "수정 처리시 문제가 발생했습니다.";
@@ -80,12 +82,9 @@ function modify() {
                 msg = "수정이 완료되었습니다.";
             }
             alert(msg);
-            // 현재 route를 /list로 변경.
-            // moveList();
             movedetail();
         },
         (error) => {
-            console.log("no");
             console.log(error);
         }
     );
@@ -95,12 +94,8 @@ function movedetail() {
     Router.push({ name: "noticedetail", params: { articleno: article.articleno, pgno: paramPgno } });
 }
 
-function moveList() {
-    Router.push({ name: "noticelist" });
-}
-
-function test() {
-    console.log(article.subject);
+function movelist() {
+    Router.push({ name: "notice", params: { pgno: paramPgno } });
 }
 </script>
 <template>
@@ -134,8 +129,7 @@ function test() {
                                                     label="Subject"
                                                     type="text"
                                                     placeholder="제목을 입력하세요"
-                                                    v-model:value="article.subject"
-                                                    @keyup="test"
+                                                    v-model="article.subject"
                                                 />
                                             </div>
                                             <div class="my-2 mb-4">
@@ -144,7 +138,7 @@ function test() {
                                                     label="Name"
                                                     type="text"
                                                     placeholder="이름을 입력하세요"
-                                                    :value="article.userid"
+                                                    v-model="article.userid"
                                                     isDisabled
                                                 />
                                             </div>
@@ -154,7 +148,7 @@ function test() {
                                                     class="input-group-static mb-4"
                                                     placeholder="내용을 입력하세요"
                                                     :rows="7"
-                                                    :value="article.content"
+                                                    v-model="article.content"
                                                 ></MaterialTextArea>
                                             </div>
                                         </div>
@@ -164,7 +158,14 @@ function test() {
                                                     class="m-1 mb-0"
                                                     variant="outline"
                                                     color="info"
-                                                    @click="modify"
+                                                    @click="movelist"
+                                                    >목록</MaterialButton
+                                                >
+                                                <MaterialButton
+                                                    class="m-1 mb-0"
+                                                    variant="outline"
+                                                    color="success"
+                                                    @click.prevent="modify"
                                                     >수정</MaterialButton
                                                 >
                                                 <MaterialButton

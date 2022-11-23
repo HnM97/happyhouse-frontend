@@ -41,13 +41,20 @@ function moveNoticeRegist() {
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="">
-                                <MaterialButton class="my-2" variant="outline" color="dark" @click="moveNoticeRegist">
-                                    글작성
+                            <NoticeList></NoticeList>
+                            <div class="d-flex justify-content-end">
+                                <MaterialButton
+                                    size="sm"
+                                    class="my-2 me-5"
+                                    variant="outline"
+                                    color="dark"
+                                    @click="moveNoticeRegist"
+                                    ><div class="d-flex align-items-center">
+                                        <i class="fa fa-light fa-pen me-2"></i>
+                                        글작성
+                                    </div>
                                 </MaterialButton>
                             </div>
-
-                            <NoticeList></NoticeList>
                             <section class="py-4 pb-2">
                                 <div class="container">
                                     <div class="row justify-space-between py-2">

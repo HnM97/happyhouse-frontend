@@ -19,12 +19,14 @@ import notice from "@/assets/img/notice.jpg";
 import Router from "@/router";
 import { useRoute } from "vue-router";
 import { getNotice, deleteNotice } from "@/api/notice";
+import { noticeStore } from "@/stores/NoticeStore.js";
 
 const route = useRoute();
+const store = noticeStore();
 
 let paramArticleno = route.params.articleno;
 let paramPgno = route.params.pgno;
-console.log(paramPgno);
+
 getNotice(
     paramArticleno,
     ({ data }) => {
@@ -34,6 +36,8 @@ getNotice(
         article.content = data.content;
         article.hit = data.hit;
         article.registerTime = data.registerTime;
+        store.setNotice(article);
+        store.setPgno(paramPgno);
     },
     (error) => {
         console.log(error);
@@ -55,8 +59,8 @@ const article = reactive({
 });
 
 const message = computed(() => {
-    if (article.content.value) {
-        return article.content.value.split("/n").join("<br>");
+    if (article.content) {
+        return article.content.split("/n").join("<br>");
     }
 });
 
@@ -69,12 +73,6 @@ function moveModifyNotice() {
         name: "noticemodify",
         params: {
             articleno: article.articleno,
-            userid: article.userid,
-            userName: article.userName,
-            subject: article.subject,
-            content: article.content,
-            hit: article.hit,
-            registerTime: article.registerTime,
             pgno: paramPgno,
         },
     });

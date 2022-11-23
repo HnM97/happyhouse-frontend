@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, onUpdated, reactive, ref } from "vue";
 
 //example components
 import NavbarDefault from "@/examples/navbars/NavbarDefault.vue";
@@ -22,23 +22,26 @@ import Router from "@/router";
 
 import { userStore } from "@/stores/UserStore.js";
 import { computed } from "@vue/reactivity";
+import { writeNotice } from "@/api/notice";
 
-const userid = ref(null);
-const subject = ref(null);
-const content = ref(null);
+// const userid = ref(null);
+// const subject = ref(null);
+// const content = ref(null);
 
 onMounted(() => {
     setMaterialInput();
 });
 
 const userinfo = computed(() => userStore.userInfo);
+// console.log(userinfo);
 
 const article = reactive({
     articleno: 0,
-    userid: "",
+    userid: "ssafy",
     subject: "",
     content: "",
 });
+console.log("NoticeRegist article.subject: " + article.subject);
 
 const isUserid = ref(false);
 
@@ -46,7 +49,9 @@ function movelist() {
     Router.push("/notice");
 }
 
-function onSubmit() {
+function onSubmit(event) {
+    event.preventDefault();
+    alert("1NoticeRegist onSubmit: " + JSON.stringify(article));
     let err = true;
     let msg = "";
     !article.userid && ((msg = "작성자 입력해주세요"), (err = false), userid.focus());
@@ -54,26 +59,33 @@ function onSubmit() {
     err && !article.content && ((msg = "내용 입력해주세요"), (err = false), content.focus());
 
     if (!err) alert(msg);
-    // else registNotice();
+    else registNotice();
 }
 
-function registNotice() {
+async function registNotice() {
+    article.userid = "ssafy";
     let param = {
-        userid: article.userid,
+        userId: article.userid,
         subject: article.subject,
         content: article.content,
     };
-    writeNotice(
+
+    console.log("param : " + JSON.stringify(param));
+    alert("2NoticeRegist registNotice: " + JSON.stringify(param));
+    await writeNotice(
         param,
         ({ data }) => {
+            console.log("4NoticeRegist writeNotice: " + data);
+            alert("4NoticeRegist writeNotice: " + data);
             let msg = "등록 처리시 문제가 발생했습니다.";
             if (data === "success") {
                 msg = "등록이 완료되었습니다.";
             }
             alert(msg);
-            this.moveList();
+            movelist();
         },
         (error) => {
+            alert(error);
             console.log(error);
         }
     );
@@ -81,10 +93,14 @@ function registNotice() {
 
 function onReset(event) {
     event.preventDefault();
-    this.article.articleno = 0;
-    this.article.subject = "";
-    this.article.content = "";
+    article.articleno = 0;
+    article.subject = "";
+    article.content = "";
     // this.moveList();
+}
+function test() {
+    console.log("NoticeRegist article.subject: " + article.subject);
+    console.log("NoticeRegist article.content: " + article.content);
 }
 </script>
 
@@ -124,8 +140,9 @@ function onReset(event) {
                                                         class="input-group-static mb-4"
                                                         label="Subject"
                                                         type="text"
-                                                        ref="subject"
                                                         placeholder="제목을 입력하세요"
+                                                        v-model="article.subject"
+                                                        @keyup="test"
                                                     />
                                                 </div>
                                                 <div class="my-2 mb-4">
@@ -133,7 +150,7 @@ function onReset(event) {
                                                         class="input-group-static mb-4"
                                                         label="Name"
                                                         type="text"
-                                                        :value="userinfo"
+                                                        v-model="userinfo"
                                                         isDisabled
                                                     />
                                                 </div>
@@ -142,6 +159,8 @@ function onReset(event) {
                                                         class="input-group-static mb-4"
                                                         placeholder="내용을 입력하세요"
                                                         :rows="6"
+                                                        v-model="article.content"
+                                                        @keyup="test"
                                                         >Notice content</MaterialTextArea
                                                     >
                                                 </div>
@@ -159,7 +178,7 @@ function onReset(event) {
                                                         class="m-1 mb-0"
                                                         variant="outline"
                                                         color="success"
-                                                        @click="onSubmit"
+                                                        @click.prevent="registNotice"
                                                         >작성</MaterialButton
                                                     >
                                                     <MaterialButton
