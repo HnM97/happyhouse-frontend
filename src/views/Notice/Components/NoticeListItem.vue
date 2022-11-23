@@ -24,7 +24,7 @@ defineProps({
         type: Number,
         required: true,
     },
-    pgno: {
+    pgNo: {
         type: Number,
         required: true,
     },
@@ -37,11 +37,11 @@ defineProps({
 
 <template>
     <td class="align-middle text-center w-1">
-        <p class="text-sm mb-0">{{ index }}</p>
+        <p class="text-sm mb-0">{{ articleNo }}</p>
     </td>
     <td class="align-middle w-5">
         <RouterLink
-            :to="{ name: 'noticedetail', params: { articleno: articleNo, pgno: pgno } }"
+            :to="{ name: 'noticedetail', params: { articleno: articleNo, pgNo: pgNo } }"
             class="text-sm font-weight-bold mb-0 ps-3"
         >
             {{ subject }}

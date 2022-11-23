@@ -29,7 +29,7 @@ const noticeStore = useNoticeStore();
 const route = useRoute();
 
 let paramArticleno = route.params.articleno;
-let paramPgno = route.params.pgno;
+let paramPgNo = route.params.pgNo;
 
 onMounted(() => {
     setMaterialInput();
@@ -72,11 +72,11 @@ async function modify() {
 }
 
 function movedetail() {
-    Router.push({ name: "noticedetail", params: { articleno: article.articleno, pgno: paramPgno } });
+    Router.push({ name: "noticedetail", params: { articleno: article.articleno, pgNo: paramPgNo } });
 }
 
 function movelist() {
-    Router.push({ name: "notice", params: { pgno: paramPgno } });
+    Router.push({ name: "notice", params: { pgNo: paramPgNo } });
 }
 </script>
 <template>

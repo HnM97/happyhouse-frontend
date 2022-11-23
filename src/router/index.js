@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import HomeView from "@/views/Home/HomeView.vue";
 import NoticeView from "@/views/Notice/NoticeView.vue";
-import NoticeTable from "@/views/Notice/Components/NoticeTable.vue";
+import NoticeList from "@/views/Notice/Components/NoticeList.vue";
 import NoticeRegist from "@/views/Notice/Components/NoticeRegist.vue";
 import NoticeDetail from "@/views/Notice/Components/NoticeDetail.vue";
 import NoticeModify from "@/views/Notice/Components/NoticeModify.vue";
@@ -66,7 +66,7 @@ const router = createRouter({
                 {
                     path: "list",
                     name: "noticelist",
-                    component: NoticeTable,
+                    component: NoticeList,
                 },
                 {
                     path: "regist",
@@ -75,13 +75,13 @@ const router = createRouter({
                     component: NoticeRegist,
                 },
                 {
-                    path: "detail/:articleno/:pgno",
+                    path: "detail/:articleno/:pgNo",
                     name: "noticedetail",
                     beforeEnter: onlyAuthUser,
                     component: NoticeDetail,
                 },
                 {
-                    path: "modify/:articleno/:pgno",
+                    path: "modify/:articleno/:pgNo",
                     name: "noticemodify",
                     beforeEnter: onlyAdmin,
                     component: NoticeModify,

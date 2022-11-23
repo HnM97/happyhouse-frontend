@@ -27,7 +27,7 @@ const noticeStore = useNoticeStore();
 const userStore = useUserStore();
 
 let paramArticleno = route.params.articleno;
-let paramPgno = route.params.pgno;
+let paramPgNo = route.params.pgNo;
 
 getNotice(
     paramArticleno,
@@ -39,7 +39,7 @@ getNotice(
         article.hit = data.hit;
         article.registerTime = data.registerTime;
         noticeStore.setNotice(article);
-        noticeStore.setPgno(paramPgno);
+        noticeStore.setPgNo(paramPgNo);
     },
     (error) => {
         console.log(error);
@@ -75,7 +75,7 @@ function moveModifyNotice() {
         name: "noticemodify",
         params: {
             articleno: article.articleno,
-            pgno: paramPgno,
+            pgNo: paramPgNo,
         },
     });
     //   this.$router.push({ path: `/board/modify/${this.article.articleno}` });
@@ -86,7 +86,7 @@ function deleteThisNotice() {
         return;
     }
     if (confirm("글을 삭제하시겠습니까?")) {
-        const param = { articleno: paramArticleno, pgno: paramPgno };
+        const param = { articleno: paramArticleno, pgNo: paramPgNo };
         deleteNotice(
             param,
             ({ data }) => {

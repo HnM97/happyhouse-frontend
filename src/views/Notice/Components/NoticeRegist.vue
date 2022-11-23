@@ -63,7 +63,7 @@ function onReset() {
 }
 
 function movelist() {
-    Router.push({ name: "noticelist" });
+    Router.replace({ name: "noticelist" });
 }
 </script>
 
