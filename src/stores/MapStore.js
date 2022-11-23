@@ -45,5 +45,9 @@ export const useMapStore = defineStore("useMapStore", {
         }
       );
     },
+
+    resetAptList() {
+      this.aptList = [];
+    },
   },
 });
