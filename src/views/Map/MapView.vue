@@ -9,21 +9,21 @@ const checks = ["Hospital", "Subway", "BookMark"];
 const conditions = ["Amount", "Popular", "Area"];
 </script>
 <template>
-    <div class="position-sticky z-index-sticky top-0">
-        <div class="row">
-            <div class="col-12">
-                <NavbarDefault light />
-                <MapFilter class="text-center" :checks="checks" :conditions="conditions" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-9">
-                <MapContent class="text-center" />
-            </div>
-            <div class="col-3">
-                <AptList class="text-center" />
-            </div>
-        </div>
+  <div class="position-sticky z-index-sticky top-0">
+    <div class="row">
+      <div class="col-12">
+        <NavbarDefault light />
+        <MapFilter class="text-center" :checks="checks" :conditions="conditions" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-9">
+        <MapContent class="mt-4 text-center" />
+      </div>
+      <div class="col-3">
+        <AptList class="mt-4 text-center" />
+      </div>
     </div>
     <FooterDefault />
+  </div>
 </template>
