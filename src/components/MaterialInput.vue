@@ -56,6 +56,10 @@ defineProps({
     type: String,
     default: "",
   },
+  autocomplete: {
+    type: String,
+    default: "",
+  },
 });
 
 defineEmits(["update:modelValue"]);
@@ -91,6 +95,7 @@ function getClasses(size, success, error) {
       :placeholder="placeholder"
       :isRequired="isRequired"
       :disabled="isDisabled"
+      :autocomplete="autocomplete"
     />
   </div>
 </template>

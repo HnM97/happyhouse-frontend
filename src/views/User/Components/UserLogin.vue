@@ -17,50 +17,34 @@ import setMaterialInput from "@/assets/js/material-input";
 
 import { userStore } from "@/stores/UserStore.js";
 
+const store = userStore();
+
 onMounted(() => {
     setMaterialInput();
 });
 
 const user = reactive({
-    userid: null,
-    userpwd: null,
+    userId: "",
+    userPwd: "",
 });
 
-const isLogin = computed(() => userStore.isLogin);
-// const isLoginError = computed(() => userStore.isLoginError);
-const userInfo = computed(() => userStore.userInfo);
+const isLogin = computed(() => store.isLogin);
+// const isLoginError = computed(() => store.isLoginError);
+const userInfo = computed(() => store.userInfo);
 
 async function login() {
-    await userStore.userConfirm(user.value);
+    await store.userConfirm(user);
     let token = sessionStorage.getItem("access-token");
-    console.log("1. confirm() token >> " + token);
-    if (isLogin) {
-        await userStore.getUserInfo(token);
-        console.log("4. confirm() userInfo :: ", userInfo);
+    // alert("UserLogin 1. confirm() token >> " + token);
+    if (isLogin.value) {
+        await store.getUserInfo(token);
+        // console.log("4. confirm() userInfo :: ", userInfo);
         Router.push({ name: "home" });
     }
 }
-
-// computed: {
-//   ...mapState(memberStore, ["isLogin", "isLoginError", "userInfo"]),
-// },
-
-// methods: {
-//   ...mapActions(memberStore, ["userConfirm", "getUserInfo"]),
-//   async confirm() {
-//     await this.userConfirm(this.user);
-//     let token = sessionStorage.getItem("access-token");
-//     // console.log("1. confirm() token >> " + token);
-//     if (this.isLogin) {
-//       await this.getUserInfo(token);
-//       // console.log("4. confirm() userInfo :: ", this.userInfo);
-//       this.$router.push({ name: "main" });
-//     }
-//   },
-//   movePage() {
-//     this.$router.push({ name: "join" });
-//   },
-// },
+function movepage() {
+    Router.push({ name: "regist" });
+}
 </script>
 <template>
     <div class="container my-auto">
@@ -76,17 +60,18 @@ async function login() {
                         <form role="form" class="text-start">
                             <MaterialInput
                                 id="userid"
-                                v-model="user.userid"
+                                v-model="user.userId"
                                 class="input-group-outline mb-3"
                                 :label="{ text: '아이디', class: 'form-label' }"
                                 type="text"
                             />
                             <MaterialInput
                                 id="userpwd"
-                                v-model="user.userpwd"
+                                v-model="user.userPwd"
                                 class="input-group-outline mb-3"
                                 :label="{ text: '비밀번호', class: 'form-label' }"
                                 type="password"
+                                autocomplete="off"
                             />
                             <MaterialSwitch
                                 class="d-flex align-items-center mb-3"
@@ -102,14 +87,19 @@ async function login() {
                                     variant="gradient"
                                     color="dark"
                                     fullWidth
-                                    @click="login"
+                                    @click.prevent="login"
                                 >
                                     로그인
                                 </MaterialButton>
                             </div>
                             <p class="mt-4 text-sm text-center">
                                 아직 회원이 아니세요 ? &nbsp;
-                                <RouterLink class="text-info text-gradient font-weight-bold" to="regist" rel="tooltip">
+                                <RouterLink
+                                    class="text-info text-gradient font-weight-bold"
+                                    to="regist"
+                                    rel="tooltip"
+                                    @click="movepage"
+                                >
                                     회원가입
                                 </RouterLink>
                             </p>

@@ -2,14 +2,18 @@
 import { RouterLink } from "vue-router";
 import { ref, watch } from "vue";
 import { useWindowsWidth } from "../../assets/js/useWindowsWidth";
-import { useMapStore } from "@/stores/MapStore.js";
+import { userStore } from "@/stores/UserStore.js";
+import { useRoute } from "vue-router";
+import Router from "@/router";
 
 // images
 import ArrDark from "@/assets/img/down-arrow-dark.svg";
 import downArrow from "@/assets/img/down-arrow.svg";
 import DownArrWhite from "@/assets/img/down-arrow-white.svg";
+import { computed } from "@vue/reactivity";
 
-const store = useMapStore();
+const store = userStore();
+const route = useRoute();
 
 const props = defineProps({
   action: {
@@ -91,6 +95,20 @@ watch(
     }
   }
 );
+
+const userInfo = computed(() => store.userInfo);
+async function onClickLogout() {
+  // this.SET_IS_LOGIN(false);
+  // this.SET_USER_INFO(null);
+
+  //vuex actions에서 userLogout 실행(Backend에 저장 된 리프레시 토큰 없애기
+  //+ satate에 isLogin, userInfo 정보 변경)
+  // this.$store.dispatch("userLogout", this.userInfo.userid);
+  await store.userLogout(userInfo.userId);
+  sessionStorage.removeItem("access-token"); //저장된 토큰 없애기
+  sessionStorage.removeItem("refresh-token"); //저장된 토큰 없애기
+  if (route.path != "/") Router.push({ name: "home" });
+}
 </script>
 <template>
   <nav
@@ -163,7 +181,24 @@ watch(
       </button> -->
       <div class="collapse navbar-collapse w-100 pt-3 pb-2 py-lg-0" id="navigation">
         <ul class="navbar-nav navbar-nav-hover ms-auto">
-          <li class="nav-item dropdown dropdown-hover mx-2">
+          <li class="nav-item dropdown dropdown-hover mx-2" v-if="userInfo.userId">
+            <button
+              class="navbar-brand d-none d-md-block"
+              style="background-color: transparent; border: 0; outline: 0"
+              :class="[
+                (props.transparent && textDark.value) || !props.transparent
+                  ? 'text-dark font-weight-bolder ms-sm-3'
+                  : 'text-white font-weight-bolder ms-sm-3',
+              ]"
+              @click="onClickLogout"
+              rel="tooltip"
+              title="Designed and Coded by Creative Tim"
+              data-placement="bottom"
+            >
+              로그아웃
+            </button>
+          </li>
+          <li class="nav-item dropdown dropdown-hover mx-2" v-if="!userInfo.userId">
             <RouterLink
               class="navbar-brand d-none d-md-block"
               :class="[
@@ -179,7 +214,7 @@ watch(
               로그인
             </RouterLink>
           </li>
-          <li class="nav-item dropdown dropdown-hover mx-2">
+          <li class="nav-item dropdown dropdown-hover mx-2" v-if="!userInfo.userId">
             <RouterLink
               class="navbar-brand d-none d-md-block"
               :class="[
@@ -195,7 +230,7 @@ watch(
               회원가입
             </RouterLink>
           </li>
-          <li class="nav-item dropdown dropdown-hover mx-2">
+          <li class="nav-item dropdown dropdown-hover mx-2" v-if="userInfo.userId">
             <a
               role="button"
               class="nav-link ps-2 d-flex cursor-pointer align-items-center"
@@ -205,7 +240,7 @@ watch(
               aria-expanded="false"
             >
               <i class="fa fa-regular fa-user text-md mx-1" :class="getTextColor()"></i>
-              Profile
+              {{ userInfo.userName }} 님
               <img :src="getArrowColor()" alt="down-arrow" class="arrow ms-2 d-lg-block d-none" />
               <img :src="getArrowColor()" alt="down-arrow" class="arrow ms-1 d-lg-none d-block ms-auto" />
             </a>
@@ -218,7 +253,7 @@ watch(
                   <div class="row">
                     <div class="position-relative">
                       <div class="dropdown-header text-dark font-weight-bolder d-flex align-items-center px-1">
-                        Landing Pages
+                        Hello
                       </div>
 
                       <RouterLink to="/user/userinfo" class="dropdown-item border-radius-md">

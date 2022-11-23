@@ -13,12 +13,20 @@ import MaterialButton from "@/components/MaterialButton.vue";
 
 // material-input
 import setMaterialInput from "@/assets/js/material-input";
+
+import { userStore } from "@/stores/UserStore.js";
+import { computed } from "@vue/reactivity";
+
+const store = userStore();
+const userInfo = computed(() => store.userInfo);
+
 onMounted(() => {
     setMaterialInput();
 });
+function modifyUserInfo() {}
 
 function moveinfo() {
-    Router.push("/user/userinfo");
+    Router.push({ name: "userinfo" });
 }
 </script>
 <template>
@@ -33,34 +41,44 @@ function moveinfo() {
                     </div>
                     <div class="card-body">
                         <form role="form" class="text-start">
+                            <div class="mb-1">NAME</div>
                             <MaterialInput
                                 id="name"
                                 class="input-group-outline mb-3"
-                                :label="{ text: '김싸피', class: 'form-label' }"
+                                :label="{ text: `${userInfo.userName}`, class: 'form-label' }"
                                 type="text"
                             />
+                            <div class="mb-1">ID</div>
                             <MaterialInput
                                 id="id"
                                 class="input-group-outline mb-3"
-                                :label="{ text: 'ssafy', class: 'form-label' }"
+                                :label="{ text: `${userInfo.userId}`, class: 'form-label' }"
                                 type="text"
                             />
+                            <div class="mb-1">PASSWORD</div>
                             <MaterialInput
                                 id="password"
                                 class="input-group-outline mb-3"
-                                :label="{ text: '1234', class: 'form-label' }"
+                                :label="{ text: `${userInfo.userPwd}`, class: 'form-label' }"
                                 type="password"
                             />
+                            <div class="mb-1">EMAIL</div>
                             <MaterialInput
                                 id="email"
-                                class="input-group-outline my-3"
-                                :label="{ text: 'ssafy@ssafy.com', class: 'form-label' }"
+                                class="input-group-outline mb-3"
+                                :label="{ text: `${userInfo.email}`, class: 'form-label' }"
                                 type="email"
                             />
 
                             <div class="text-center row">
                                 <div class="col d-flex">
-                                    <MaterialButton class="m-1 my-4 mb-2" variant="gradient" color="dark" fullWidth>
+                                    <MaterialButton
+                                        class="m-1 my-4 mb-2"
+                                        variant="gradient"
+                                        color="dark"
+                                        fullWidth
+                                        @click="modifyUserInfo"
+                                    >
                                         수정
                                     </MaterialButton>
                                     <MaterialButton

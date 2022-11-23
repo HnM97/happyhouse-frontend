@@ -20,11 +20,23 @@ defineProps({
         type: String,
         default: "",
     },
+    modelValue: {
+        type: String,
+        default: "",
+    },
 });
 </script>
 <template>
     <div class="input-group">
         <label :for="id" :class="labelClass"><slot /></label>
-        <textarea name="message" class="form-control" :id="id" :placeholder="placeholder" :rows="rows" :value="value" />
+        <textarea
+            name="message"
+            class="form-control"
+            :id="id"
+            :placeholder="placeholder"
+            :rows="rows"
+            :value="modelValue"
+            @input="$emit('update:modelValue', $event.target.value)"
+        />
     </div>
 </template>
