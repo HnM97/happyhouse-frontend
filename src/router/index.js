@@ -55,35 +55,27 @@ const router = createRouter({
       redirect: "/notice/list",
       children: [
         {
-          path: "/notice",
-          name: "notice",
-          component: NoticeView,
-          redirect: "/notice/list",
-          children: [
-            {
-              path: "list",
-              name: "noticelist",
-              component: NoticeTable,
-            },
-            {
-              path: "regist",
-              name: "noticeregist",
-              beforeEnter: onlyAuthUser,
-              component: NoticeRegist,
-            },
-            {
-              path: "detail/:articleno/:pgno",
-              name: "noticedetail",
-              beforeEnter: onlyAuthUser,
-              component: NoticeDetail,
-            },
-            {
-              path: "modify/:articleno/:pgno",
-              name: "noticemodify",
-              beforeEnter: onlyAuthUser,
-              component: NoticeModify,
-            },
-          ],
+          path: "list",
+          name: "noticelist",
+          component: NoticeTable,
+        },
+        {
+          path: "regist",
+          name: "noticeregist",
+          beforeEnter: onlyAuthUser,
+          component: NoticeRegist,
+        },
+        {
+          path: "detail/:articleno/:pgno",
+          name: "noticedetail",
+          beforeEnter: onlyAuthUser,
+          component: NoticeDetail,
+        },
+        {
+          path: "modify/:articleno/:pgno",
+          name: "noticemodify",
+          beforeEnter: onlyAuthUser,
+          component: NoticeModify,
         },
       ],
     },

@@ -1,6 +1,6 @@
 <script setup>
 import NavbarDefault from "../..//examples/navbars/NavbarDefault.vue";
-import MapFilter from "../../examples/filterbars/FilterBar.vue";
+import MapFilter from "./Sections/MapFilter.vue";
 import AptList from "./Sections/AptList.vue";
 import MapContent from "./Sections/MapContent.vue";
 import FooterDefault from "@/examples/footers/FooterDefault.vue";
@@ -10,18 +10,18 @@ const conditions = ["Amount", "Popular", "Area"];
 </script>
 <template>
   <div class="position-sticky z-index-sticky top-0">
-    <div class="row">
-      <div class="col-12">
+    <div class="row" style="padding-right: 0">
+      <div class="bg-white col-12">
         <NavbarDefault light />
-        <MapFilter class="text-center" :checks="checks" :conditions="conditions" />
+        <MapFilter />
       </div>
     </div>
     <div class="row">
-      <div class="col-9">
-        <MapContent class="mt-4 text-center" />
+      <div class="col-9 mt-3">
+        <MapContent class="shadow-sm text-center" />
       </div>
-      <div class="col-3">
-        <AptList class="mt-4 text-center" />
+      <div class="col-3 mt-3">
+        <AptList />
       </div>
     </div>
     <FooterDefault />

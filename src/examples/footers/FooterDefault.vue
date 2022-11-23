@@ -73,7 +73,7 @@ defineProps({
       <div class="row">
         <div class="col-md-3">
           <div class="d-flex align-items-end mb-3">
-            <i class="fas fa-solid fa-house"></i>
+            <font-awesome-icon class="mb-2 me-2" icon="fa-solid fa-house" />
             <!-- <a :href="brand.route">
               <img :src="brand.logo" class="me-3 footer-logo" alt="main_logo" />
             </a> -->

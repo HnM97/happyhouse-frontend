@@ -24,10 +24,19 @@ watch(
 </script>
 
 <template>
-  <h1>Apart List</h1>
-  <ul>
-    <li :display="showList" v-for="(apt, index) in list.aptList" :key="index">
-      <AptListItem :apt="apt" />
-    </li>
-  </ul>
+  <div style="overflow: scroll; height: 750px">
+    <ul style="list-style-type: none">
+      <li :display="showList" v-for="(apt, index) in list.aptList" :key="index">
+        <AptListItem :apt="apt" />
+      </li>
+    </ul>
+  </div>
 </template>
+
+<style scoped>
+html ul,
+li {
+  margin-left: 0;
+  padding-left: 0;
+}
+</style>
