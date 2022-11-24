@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { getQna, writeQna, modifyQna, deleteQna } from "@/api/qna";
+import { writeQna, writeComment } from "@/api/qna";
 
 export const useQnaStore = defineStore("useQnaStore", {
     persist: true,
@@ -33,6 +33,24 @@ export const useQnaStore = defineStore("useQnaStore", {
 
         async writeQnaContent(param) {
             await writeQna(
+                param,
+                ({ data }) => {
+                    console.log("QnaStore writeQnaContent data : ");
+                    console.log(data);
+                    let msg = "등록 처리시 문제가 발생했습니다.";
+                    if (data === "success") {
+                        msg = "등록이 완료되었습니다.";
+                    }
+                    alert(msg);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+        },
+
+        async writeCommentContent(param) {
+            await writeComment(
                 param,
                 ({ data }) => {
                     console.log("QnaStore writeQnaContent data : ");

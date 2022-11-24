@@ -10,6 +10,7 @@ import MaterialButton from "@/components/MaterialButton.vue";
 import setMaterialInput from "@/assets/js/material-input";
 import backgroundImage from "@/assets/img/background.jpg";
 
+import QnaDetailMemo from "@/views/QnA/Components/QnaDetailMemo.vue";
 import notice from "@/assets/img/notice.jpg";
 
 import Router from "@/router";
@@ -161,7 +162,7 @@ function deleteThisQna() {
                                     {{ article.content }}
                                     <br />
                                 </p>
-                                <div class="row my-6">
+                                <div class="row my-3">
                                     <div class="col d-flex justify-content-end">
                                         <MaterialButton
                                             class="m-1 mb-0"
@@ -194,6 +195,8 @@ function deleteThisQna() {
                     </div>
                 </div>
             </div>
+
+            <QnaDetailMemo :articleNo="article.articleno" :userId="article.userid"></QnaDetailMemo>
         </section>
     </div>
 </template>
