@@ -12,9 +12,9 @@ import MaterialButton from "@/components/MaterialButton.vue";
 
 import Router from "@/router";
 import { useRoute } from "vue-router";
-import NoticeListItem from "@/views/Notice/Components/NoticeListItem.vue";
+import QnaListItem from "@/views/Qna/Components/QnaListItem.vue";
 import { reactive } from "vue";
-import { listNotice } from "@/api/notice";
+import { listQna } from "@/api/qna";
 
 const headers = ["글번호", "제목", "작성자", "작성일", "조회수"];
 const articles = reactive([]);
@@ -43,10 +43,10 @@ const naviData = reactive({
     totalCount: 50,
 });
 
-initNotice();
+initQna();
 
-function initNotice() {
-    listNotice(
+function initQna() {
+    listQna(
         param,
         ({ data }) => {
             naviData.currentPage = data.currentPage;
@@ -76,15 +76,15 @@ function initNotice() {
 
 function changePage(pgNaviNo) {
     param.pgNo = pgNaviNo;
-    initNotice();
+    initQna();
 }
 
 onMounted(() => {
     setMaterialInput();
 });
 
-function moveNoticeRegist() {
-    Router.replace("/notice/regist");
+function moveQnaRegist() {
+    Router.replace("/qna/regist");
 }
 </script>
 <template>
@@ -97,7 +97,7 @@ function moveNoticeRegist() {
                         <!-- <div class="card d-flex bg-opacity-100 justify-content-center shadow-lg my-sm-0 my-sm-6 mt-8 mb-5"> -->
                         <div class="card-header p-0 position-relative mt-n5 mx-3 z-index-2 bg-transparent">
                             <div class="bg-gradient-dark shadow-dark border-radius-lg p-3">
-                                <h3 class="text-white text-success mb-0">공지사항</h3>
+                                <h3 class="text-white text-success mb-0">Q & A</h3>
                             </div>
                         </div>
                         <div class="card-body">
@@ -118,7 +118,7 @@ function moveNoticeRegist() {
                                         v-for="({ articleNo, subject, userId, registerTime, hit }, index) of articles"
                                         :key="index"
                                     >
-                                        <NoticeListItem
+                                        <QnaListItem
                                             :articleNo="articleNo"
                                             :subject="subject"
                                             :userId="userId"
@@ -137,7 +137,7 @@ function moveNoticeRegist() {
                                     class="my-2 me-5"
                                     variant="outline"
                                     color="dark"
-                                    @click="moveNoticeRegist"
+                                    @click="moveQnaRegist"
                                     ><div class="d-flex align-items-center">
                                         <i class="fa fa-light fa-pen me-2"></i>
                                         글작성

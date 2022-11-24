@@ -41,7 +41,7 @@ defineProps({
     </td>
     <td class="align-middle w-5">
         <RouterLink
-            :to="{ name: 'noticedetail', params: { articleno: articleNo, pgNo: pgNo } }"
+            :to="{ name: 'qnadetail', params: { articleno: articleNo, pgNo: pgNo } }"
             class="text-sm font-weight-bold mb-0 ps-3"
         >
             {{ subject }}

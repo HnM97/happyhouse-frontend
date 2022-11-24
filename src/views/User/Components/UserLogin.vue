@@ -15,9 +15,9 @@ import MaterialButton from "@/components/MaterialButton.vue";
 // material-input
 import setMaterialInput from "@/assets/js/material-input";
 
-import { userStore } from "@/stores/UserStore.js";
+import { useUserStore } from "@/stores/UserStore.js";
 
-const store = userStore();
+const userStore = useUserStore();
 
 onMounted(() => {
     setMaterialInput();
@@ -28,18 +28,28 @@ const user = reactive({
     userPwd: "",
 });
 
-const isLogin = computed(() => store.isLogin);
-// const isLoginError = computed(() => store.isLoginError);
-const userInfo = computed(() => store.userInfo);
+const isLogin = computed(() => userStore.isLogin);
+// const isLoginError = computed(() => userStore.isLoginError);
+const userInfo = computed(() => userStore.userInfo);
 
 async function login() {
-    await store.userConfirm(user);
+    if (!user.userId) {
+        alert("아이디를 입력하세요");
+        return;
+    } else if (!user.userPwd) {
+        alert("비밀번호를 입력하세요");
+        return;
+    }
+    await userStore.userConfirm(user);
     let token = sessionStorage.getItem("access-token");
     // alert("UserLogin 1. confirm() token >> " + token);
     if (isLogin.value) {
-        await store.getUserInfo(token);
+        await userStore.getUserInfo(token);
         // console.log("4. confirm() userInfo :: ", userInfo);
+        alert(userInfo.value.userId + " 님 안녕하세요");
         Router.push({ name: "home" });
+    } else {
+        alert("로그인에 실패하였습니다\n아이디와 비밀번호를 확인하세요");
     }
 }
 function movepage() {

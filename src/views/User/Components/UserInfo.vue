@@ -14,11 +14,15 @@ import MaterialButton from "@/components/MaterialButton.vue";
 // material-input
 import setMaterialInput from "@/assets/js/material-input";
 
-import { userStore } from "@/stores/UserStore.js";
+import { useUserStore } from "@/stores/UserStore.js";
 import { computed } from "@vue/reactivity";
 
-const store = userStore();
-const userInfo = computed(() => store.userInfo);
+const userStore = useUserStore();
+const userInfo = userStore.userInfo;
+
+const user = {
+    userId: userInfo.userId,
+};
 
 onMounted(() => {
     setMaterialInput();
@@ -32,10 +36,13 @@ function modify() {
     Router.push("/user/modify");
 }
 
-function deleteuser() {
+async function deleteuser() {
     alert("정말 탈퇴하시겠습니까?");
+    await userStore.deleteUserInfo(user.userId);
+    Router.push({ name: "home" });
 }
 </script>
+
 <template>
     <div class="container my-auto">
         <div class="row">
@@ -106,7 +113,7 @@ function deleteuser() {
                                         variant="gradient"
                                         color="dark"
                                         fullWidth
-                                        @click="deleteuser"
+                                        @click.prevent="deleteuser"
                                     >
                                         탈퇴
                                     </MaterialButton>
