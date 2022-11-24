@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, reactive } from "vue";
-import { keywordToReg, searchApt, getAddress } from "@/api/map.js";
+import { keywordToReg, searchApt, getBookmarkList } from "@/api/map.js";
 export const useMapStore = defineStore("useMapStore", {
   persist: true,
   state: () => ({
@@ -9,6 +9,8 @@ export const useMapStore = defineStore("useMapStore", {
       dongCode: "",
     },
     aptList: [],
+    selectedMarker: { marker: null, index: 0 },
+    bookmark: false,
   }),
   getters: {
     getKeyword(state) {
@@ -28,6 +30,9 @@ export const useMapStore = defineStore("useMapStore", {
           this.keyword = keyword.value;
           this.params.dongCode = data;
           this.setAptList(this.params);
+          if (this.bookmark) {
+            this.bookmark = false;
+          }
         },
         (error) => {
           console.log(error);
@@ -48,6 +53,28 @@ export const useMapStore = defineStore("useMapStore", {
 
     resetAptList() {
       this.aptList = [];
+    },
+
+    setMarker(marker, index) {
+      console.log("set marker in store");
+      console.log(marker);
+      console.log(index);
+      this.selectedMarker.marker = marker;
+      this.selectedMarker.index = index;
+    },
+
+    async setBookmark(userId) {
+      await getBookmarkList(
+        userId,
+        ({ data }) => {
+          this.keyword = "";
+          this.aptList = data;
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+      this.bookmark = "true";
     },
   },
 });

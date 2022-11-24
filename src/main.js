@@ -8,7 +8,16 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 /* import specific icons */
-import { faHouse, faPersonDigging, faLocationDot, faCircleDollarToSlot } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHouse,
+  faPersonDigging,
+  faLocationDot,
+  faCircleDollarToSlot,
+  faArrowLeftLong,
+  faHeart as sfaHeart,
+} from "@fortawesome/free-solid-svg-icons";
+
+import { faHeart } from "@fortawesome/free-regular-svg-icons";
 
 import App from "./App.vue";
 import router from "./router";
@@ -24,6 +33,9 @@ library.add(faHouse);
 library.add(faPersonDigging);
 library.add(faLocationDot);
 library.add(faCircleDollarToSlot);
+library.add(faArrowLeftLong);
+library.add(faHeart);
+library.add(sfaHeart);
 
 const app = createApp(App);
 const pinia = createPinia();

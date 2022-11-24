@@ -14,6 +14,8 @@ function handleSearch() {
   store.resetAptList;
   store.changeRegcode(keyword);
 }
+
+function handleBookmark() {}
 </script>
 
 <template>
@@ -26,27 +28,14 @@ function handleSearch() {
           placeholder="Type here..."
           size="md"
         />
-        <a
-          @click="handleSearch"
-          href="#"
-          class="btn mb-0 btn-sm bg-gradient-secondary text-nowrap"
-          >검색</a
-        >
+        <a @click="handleSearch" href="#" class="btn mb-0 btn-sm bg-gradient-secondary text-nowrap">검색</a>
       </div>
-      <div
-        class="col-1 border-black my-auto"
-        v-for="(check, index) in checks"
-        :key="index"
-      >
-        <MaterialCheckbox class="ps-0" :id="`check-${index}`" checked>
+      <div class="col-1 border-black my-auto" v-for="(check, index) in checks" :key="index">
+        <MaterialCheckbox class="ps-0" :id="`check-${index}`">
           {{ check }}
         </MaterialCheckbox>
       </div>
-      <div
-        class="col-1 border-black me-3"
-        v-for="(condition, index) in conditions"
-        :key="index"
-      >
+      <div class="col-1 border-black me-3" v-for="(condition, index) in conditions" :key="index">
         <div class="dropdown mt-2">
           <button
             class="btn btn-sm btn-secondary dropdown-toggle"
