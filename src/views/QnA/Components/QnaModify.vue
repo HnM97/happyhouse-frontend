@@ -20,12 +20,12 @@ import regist from "@/assets/img/regist.jpg";
 
 import Router from "@/router";
 import { useRoute } from "vue-router";
-import { modifyNotice } from "@/api/notice";
-import { useNoticeStore } from "@/stores/NoticeStore.js";
+import { modifyQna } from "@/api/qna.js";
+import { useQnaStore } from "@/stores/QnaStore.js";
 import { computed } from "@vue/reactivity";
 
 // console.log();
-const noticeStore = useNoticeStore();
+const qnaStore = useQnaStore();
 const route = useRoute();
 
 let paramArticleno = route.params.articleno;
@@ -35,16 +35,16 @@ onMounted(() => {
     setMaterialInput();
 });
 
-const notice = noticeStore.notice;
+const qna = qnaStore.qna;
 
 const article = reactive({
-    articleno: notice.articleno,
-    userid: notice.userid,
-    username: notice.username,
-    subject: notice.subject,
-    content: notice.content,
-    hit: notice.hit,
-    registertime: notice.registertime,
+    articleno: qna.articleno,
+    userid: qna.userid,
+    username: qna.username,
+    subject: qna.subject,
+    content: qna.content,
+    hit: qna.hit,
+    registertime: qna.registertime,
 });
 
 async function modify() {
@@ -55,9 +55,10 @@ async function modify() {
         content: article.content,
     };
 
-    await modifyNotice(
+    await modifyQna(
         params,
         ({ data }) => {
+            // alert(data);
             let msg = "수정 처리시 문제가 발생했습니다.";
             if (data === "success") {
                 msg = "수정이 완료되었습니다.";
@@ -70,12 +71,13 @@ async function modify() {
         }
     );
 }
+
 function movedetail() {
-    Router.replace({ name: "noticedetail", params: { articleno: article.articleno, pgNo: paramPgNo } });
+    Router.push({ name: "qnadetail", params: { articleno: article.articleno, pgNo: paramPgNo } });
 }
 
 function movelist() {
-    Router.replace({ path: `/notice/list/${article.articleno}/${paramPgNo}` });
+    Router.replace({ path: `/qna/list/${article.articleno}/${paramPgNo}` });
 }
 </script>
 <template>

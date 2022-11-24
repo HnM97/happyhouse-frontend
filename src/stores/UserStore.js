@@ -1,9 +1,9 @@
 import jwtDecode from "jwt-decode";
 import Router from "@/router";
-import { login, findById, tokenRegeneration, logout } from "@/api/user";
+import { findById, logout, login, tokenRegeneration, modifyUser, deleteUser } from "@/api/user";
 import { defineStore } from "pinia";
 
-export const userStore = defineStore("userStore", {
+export const useUserStore = defineStore("useUserStore", {
     persist: true,
 
     state: () => ({
@@ -52,18 +52,12 @@ export const userStore = defineStore("userStore", {
                         let refreshToken = data["refresh-token"];
                         // console.log("userStore login success token created!!!! >> ", accessToken, refreshToken);
 
-                        // commit("SET_IS_LOGIN", true);
-                        // commit("SET_IS_LOGIN_ERROR", false);
-                        // commit("SET_IS_VALID_TOKEN", true);
                         this.setIsLogin(true);
                         this.setIsLoginError(false);
                         this.setIsValidToken(true);
                         sessionStorage.setItem("access-token", accessToken);
                         sessionStorage.setItem("refresh-token", refreshToken);
                     } else {
-                        // commit("SET_IS_LOGIN", false);
-                        // commit("SET_IS_LOGIN_ERROR", true);
-                        // commit("SET_IS_VALID_TOKEN", false);
                         this.setIsLogin(false);
                         this.setIsLoginError(true);
                         this.setIsValidToken(false);
@@ -93,7 +87,6 @@ export const userStore = defineStore("userStore", {
                             email: email,
                         };
 
-                        // commit("SET_USER_INFO", data.userInfo);
                         this.setUserInfo(dataUserInfo);
                     } else {
                         console.log("유저 정보 없음!!!!");
@@ -101,7 +94,6 @@ export const userStore = defineStore("userStore", {
                 },
                 async (error) => {
                     console.log("getUserInfo() error code [토큰 만료되어 사용 불가능.] ::: ", error.response.status);
-                    // commit("SET_IS_VALID_TOKEN", false);
                     this.setIsValidToken(false);
                     // await dispatch("tokenRegeneration");
                 }
@@ -117,7 +109,6 @@ export const userStore = defineStore("userStore", {
                         let accessToken = data["access-token"];
                         console.log("재발급 완료 >> 새로운 토큰 : {}", accessToken);
                         sessionStorage.setItem("access-token", accessToken);
-                        // commit("SET_IS_VALID_TOKEN", true);
                         this.setIsValidToken(true);
                     }
                 },
@@ -135,9 +126,6 @@ export const userStore = defineStore("userStore", {
                                     console.log("리프레시 토큰 제거 실패");
                                 }
                                 alert("RefreshToken 기간 만료!!! 다시 로그인해 주세요.");
-                                // commit("SET_IS_LOGIN", false);
-                                // commit("SET_USER_INFO", null);
-                                // commit("SET_IS_VALID_TOKEN", false);
                                 this.setIsLogin(false);
                                 this.setUserInfo(null);
                                 this.setIsValidToken(false);
@@ -145,8 +133,6 @@ export const userStore = defineStore("userStore", {
                             },
                             (error) => {
                                 console.log(error);
-                                // commit("SET_IS_LOGIN", false);
-                                // commit("SET_USER_INFO", null);
                                 this.setIsLogin(false);
                                 this.setUserInfo(null);
                             }
@@ -156,20 +142,54 @@ export const userStore = defineStore("userStore", {
             );
         },
 
+        async modifyUserInfo(user) {
+            await modifyUser(
+                user,
+                ({ data }) => {
+                    let msg = "수정 처리시 문제가 발생했습니다";
+                    if (data.message === "success") {
+                        msg = "수정이 완료되었습니다";
+                    }
+                    alert(msg);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+        },
+
         async userLogout(userid) {
             await logout(
                 userid,
                 ({ data }) => {
                     if (data.message === "success") {
-                        // commit("SET_IS_LOGIN", false);
-                        // commit("SET_USER_INFO", null);
-                        // commit("SET_IS_VALID_TOKEN", false);
+                        sessionStorage.removeItem("access-token"); //저장된 토큰 없애기
+                        sessionStorage.removeItem("refresh-token"); //저장된 토큰 없애기
                         this.setIsLogin(false);
                         this.setUserInfo(null);
                         this.setIsValidToken(false);
                     } else {
                         console.log("유저 정보 없음!!!!");
                     }
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+        },
+        async deleteUserInfo(userId) {
+            alert(userId);
+            await deleteUser(
+                userId,
+                ({ data }) => {
+                    let msg = "탈퇴 처리시 문제가 발생했습니다";
+                    if (data.message === "success") {
+                        msg = "탈퇴가 완료되었습니다";
+                        this.setIsLogin(false);
+                        this.setUserInfo(null);
+                        this.setIsValidToken(false);
+                    }
+                    alert(msg);
                 },
                 (error) => {
                     console.log(error);

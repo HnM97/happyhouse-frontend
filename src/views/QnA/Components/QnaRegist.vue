@@ -21,10 +21,11 @@ import regist from "@/assets/img/regist.jpg";
 import Router from "@/router";
 
 import { useUserStore } from "@/stores/UserStore.js";
-import { useNoticeStore } from "@/stores/NoticeStore.js";
+import { useQnaStore } from "@/stores/QnaStore.js";
+import { computed } from "@vue/reactivity";
 
 const userStore = useUserStore();
-const noticeStore = useNoticeStore();
+const qnaStore = useQnaStore();
 
 const articleNo = ref(1);
 const pgNo = ref(1);
@@ -55,7 +56,7 @@ async function onSubmit() {
         subject: article.subject,
         content: article.content,
     };
-    await noticeStore.writeNoticeContent(param);
+    await qnaStore.writeQnaContent(param);
     movelist();
 }
 
@@ -65,7 +66,7 @@ function onReset() {
 }
 
 function movelist() {
-    Router.replace({ path: `/notice/list/${articleNo.value}/${pgNo.value}` });
+    Router.replace({ path: `/qna/list/${articleNo.value}/${pgNo.value}` });
 }
 </script>
 
@@ -125,7 +126,7 @@ function movelist() {
                                                         :rows="6"
                                                         v-model="article.content"
                                                         @keyup="test"
-                                                        >Notice content</MaterialTextArea
+                                                        >Qna content</MaterialTextArea
                                                     >
                                                 </div>
                                             </div>

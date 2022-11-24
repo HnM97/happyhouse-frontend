@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
+import { getNotice, writeNotice, modifyNotice, deleteNotice } from "@/api/notice";
 
-export const noticeStore = defineStore("noticeStore", {
+export const useNoticeStore = defineStore("useNoticeStore", {
     persist: true,
 
     state: () => ({
@@ -13,7 +14,7 @@ export const noticeStore = defineStore("noticeStore", {
             hit: null,
             registertime: null,
         },
-        pgno: 0,
+        pgNo: 0,
     }),
     actions: {
         setNotice(notice) {
@@ -25,8 +26,26 @@ export const noticeStore = defineStore("noticeStore", {
             this.notice.hit = notice.hit;
             this.notice.registertime = notice.registerTime;
         },
-        setPgno(pgno) {
-            this.pgno = pgno;
+
+        setPgNo(pgNo) {
+            this.pgNo = pgNo;
+        },
+
+        async writeNoticeContent(param) {
+            await writeNotice(
+                param,
+                ({ data }) => {
+                    console.log(data);
+                    let msg = "등록 처리시 문제가 발생했습니다.";
+                    if (data === "success") {
+                        msg = "등록이 완료되었습니다.";
+                    }
+                    alert(msg);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
         },
     },
 });

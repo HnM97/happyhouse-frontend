@@ -1,10 +1,6 @@
 <script setup>
 import { onMounted, reactive, computed } from "vue";
 
-//example components
-import NavbarDefault from "@/examples/navbars/NavbarDefault.vue";
-import FooterDefault from "@/examples/footers/FooterDefault.vue";
-
 import Header from "@/examples/Header.vue";
 
 import MaterialAvatar from "@/components/MaterialAvatar.vue";
@@ -14,22 +10,23 @@ import MaterialButton from "@/components/MaterialButton.vue";
 import setMaterialInput from "@/assets/js/material-input";
 import backgroundImage from "@/assets/img/background.jpg";
 
+import QnaDetailMemo from "@/views/QnA/Components/QnaDetailMemo.vue";
 import notice from "@/assets/img/notice.jpg";
 
 import Router from "@/router";
 import { useRoute } from "vue-router";
-import { getNotice, deleteNotice } from "@/api/notice";
-import { useNoticeStore } from "@/stores/NoticeStore.js";
+import { getQna, deleteQna } from "@/api/qna";
+import { useQnaStore } from "@/stores/QnaStore.js";
 import { useUserStore } from "@/stores/UserStore.js";
 
 const route = useRoute();
-const noticeStore = useNoticeStore();
+const qnaStore = useQnaStore();
 const userStore = useUserStore();
 
 let paramArticleno = route.params.articleno;
 let paramPgNo = route.params.pgNo;
 
-getNotice(
+getQna(
     paramArticleno,
     ({ data }) => {
         article.articleno = data.articleNo;
@@ -38,8 +35,8 @@ getNotice(
         article.content = data.content;
         article.hit = data.hit;
         article.registerTime = data.registerTime;
-        noticeStore.setNotice(article);
-        noticeStore.setPgNo(paramPgNo);
+        qnaStore.setQna(article);
+        qnaStore.setPgNo(paramPgNo);
     },
     (error) => {
         console.log(error);
@@ -67,9 +64,9 @@ const message = computed(() => {
 });
 
 function movelist() {
-    Router.replace({ path: `/notice/list/${article.articleno}/${paramPgNo}` });
+    Router.replace({ path: `/qna/list/${article.articleno}/${paramPgNo}` });
     // Router.replace({
-    //     name: "noticelist",
+    //     name: "qnalist",
     //     params: {
     //         articleno: article.articleno,
     //         pgNo: paramPgNo,
@@ -77,10 +74,10 @@ function movelist() {
     // });
 }
 
-function moveModifyNotice() {
-    Router.replace({ path: `/notice/modify/${article.articleno}/${paramPgNo}` });
+function moveModifyQna() {
+    Router.replace({ path: `/qna/modify/${article.articleno}/${paramPgNo}` });
     // Router.replace({
-    //     name: "noticemodify",
+    //     name: "qnamodify",
     //     params: {
     //         articleno: article.articleno,
     //         pgNo: paramPgNo,
@@ -88,14 +85,14 @@ function moveModifyNotice() {
     // });
     //   this.$router.push({ path: `/board/modify/${this.article.articleno}` });
 }
-function deleteThisNotice() {
+function deleteThisQna() {
     if (userStore.userInfo.userId !== "관리자") {
         alert("관리자만 접근이 가능합니다");
         return;
     }
     if (confirm("글을 삭제하시겠습니까?")) {
         const param = { articleno: paramArticleno, pgNo: paramPgNo };
-        deleteNotice(
+        deleteQna(
             param,
             ({ data }) => {
                 let msg = "삭제 처리시 문제가 발생했습니다.";
@@ -103,7 +100,7 @@ function deleteThisNotice() {
                     msg = "삭제가 완료되었습니다.";
                 }
                 alert(msg);
-                Router.push({ name: "noticelist" });
+                Router.push({ name: "qnalist" });
             },
             (error) => {
                 console.log(error);
@@ -165,7 +162,7 @@ function deleteThisNotice() {
                                     {{ article.content }}
                                     <br />
                                 </p>
-                                <div class="row my-6">
+                                <div class="row my-3">
                                     <div class="col d-flex justify-content-end">
                                         <MaterialButton
                                             class="m-1 mb-0"
@@ -180,7 +177,7 @@ function deleteThisNotice() {
                                             variant="outline"
                                             color="success"
                                             size="sm"
-                                            @click="moveModifyNotice"
+                                            @click="moveModifyQna"
                                             >수정</MaterialButton
                                         >
                                         <MaterialButton
@@ -188,7 +185,7 @@ function deleteThisNotice() {
                                             variant="outline"
                                             color="danger"
                                             size="sm"
-                                            @click="deleteThisNotice"
+                                            @click="deleteThisQna"
                                             >삭제</MaterialButton
                                         >
                                     </div>
@@ -198,6 +195,8 @@ function deleteThisNotice() {
                     </div>
                 </div>
             </div>
+
+            <QnaDetailMemo :articleNo="article.articleno" :userId="article.userid"></QnaDetailMemo>
         </section>
     </div>
 </template>
