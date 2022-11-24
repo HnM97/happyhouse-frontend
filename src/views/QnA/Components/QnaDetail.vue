@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, computed } from "vue";
+import { onMounted, reactive, computed, ref } from "vue";
 
 import Header from "@/examples/Header.vue";
 
@@ -11,11 +11,11 @@ import setMaterialInput from "@/assets/js/material-input";
 import backgroundImage from "@/assets/img/background.jpg";
 
 import QnaDetailMemo from "@/views/QnA/Components/QnaDetailMemo.vue";
-import notice from "@/assets/img/notice.jpg";
+import question from "@/assets/img/question.jpg";
 
 import Router from "@/router";
 import { useRoute } from "vue-router";
-import { getQna, deleteQna } from "@/api/qna";
+import { getQna, deleteQna } from "@/api/qna.js";
 import { useQnaStore } from "@/stores/QnaStore.js";
 import { useUserStore } from "@/stores/UserStore.js";
 
@@ -23,8 +23,9 @@ const route = useRoute();
 const qnaStore = useQnaStore();
 const userStore = useUserStore();
 
-let paramArticleno = route.params.articleno;
-let paramPgNo = route.params.pgNo;
+const userId = ref(userStore.userId);
+const paramArticleno = route.params.articleno;
+const paramPgNo = route.params.pgNo;
 
 getQna(
     paramArticleno,
@@ -49,10 +50,10 @@ onMounted(() => {
 
 const article = reactive({
     articleno: 0,
-    userid: "관리자 id",
-    userName: "관리자 이름",
-    subject: "default subject",
-    content: "default content",
+    userid: "",
+    userName: "",
+    subject: "",
+    content: "",
     hit: 0,
     registerTime: null,
 });
@@ -124,7 +125,7 @@ function deleteThisQna() {
                         <MaterialAvatar
                             size="xxl"
                             class="shadow-xl position-relative z-index-2 m-4"
-                            :image="notice"
+                            :image="question"
                             alt="Avatar"
                         />
                     </div>
@@ -195,8 +196,7 @@ function deleteThisQna() {
                     </div>
                 </div>
             </div>
-
-            <QnaDetailMemo :articleNo="article.articleno" :userId="article.userid"></QnaDetailMemo>
+            <QnaDetailMemo :articleNo="paramArticleno" :userId="userId" />
         </section>
     </div>
 </template>

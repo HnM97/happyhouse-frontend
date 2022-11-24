@@ -34,9 +34,7 @@ function writeComment(param, success, fail) {
     api.post(`/qna/qnas/${param.articleNo}/memo`, JSON.stringify(param)).then(success).catch(fail);
 }
 // >> ex )
-// const param = {
-//     articleno: null,
-//     memo: {
+// const memo = {
 //         memoNo: 1,
 //         articleNo: null,
 //         userId: "",
