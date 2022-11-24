@@ -29,6 +29,7 @@ const param = reactive({
 });
 
 const naviData = reactive({
+    currentPage: 1,
     startRange: true,
     endRange: true,
     startPage: 1,
@@ -44,6 +45,7 @@ function initNotice() {
     listNotice(
         param,
         ({ data }) => {
+            naviData.currentPage = data.currentPage;
             naviData.startRange = data.startRange;
             naviData.endRange = data.endRange;
             naviData.startPage = data.startPage;
@@ -56,6 +58,8 @@ function initNotice() {
             for (let index = 0; index < data.list.length; index++) {
                 articles.push(data.list[index]);
             }
+            console.log("NoticeList initNotice data VV");
+            console.log(data);
 
             pgNaviList.length = 0;
             console.log("NoticeList initNotice naviData.startPage : " + naviData.startPage);
@@ -71,12 +75,11 @@ function initNotice() {
     );
 }
 // const cp = ref(null);
-function changePage() {
-    // console.log("it's me");
-    // console.log(cp.value);
-    // initNotice();
+function changePage(pgNaviNo) {
+    param.pgNo = pgNaviNo;
+    initNotice();
 }
-
+// :"naviData.currentPage === pgNaviNo ? 'active' : ''"
 onMounted(() => {
     setMaterialInput();
 });
@@ -147,24 +150,31 @@ function moveNoticeRegist() {
                                     <div class="row justify-space-between py-2">
                                         <div class="col-lg-4 mx-auto d-flex justify-content-center">
                                             <MaterialPagination>
-                                                <MaterialPaginationItem prev :value="startRange ? 1 : startPage - 1" />
                                                 <MaterialPaginationItem
-                                                    v-for="pgNaviNo of pgNaviList"
-                                                    key="pgNaviNo"
-                                                    :value="pgNaviNo"
-                                                    :label="pgNaviNo"
-                                                    :pgNo="pgNaviNo"
-                                                    :active="(activeValue = param.pgNo == pgNaviNo ? 'active' : '')"
-                                                    @click="changePage"
+                                                    prev
+                                                    @click="
+                                                        changePage(naviData.startRange ? 1 : naviData.startPage - 1)
+                                                    "
                                                 />
-                                                <!-- ref="cp" -->
+                                                <div v-for="pgNaviNo of pgNaviList" key="pgNaviNo">
+                                                    <MaterialPaginationItem
+                                                        :value="pgNaviNo"
+                                                        :label="pgNaviNo"
+                                                        :pgNaviNo="pgNaviNo"
+                                                        :currentPage="naviData.currentPage"
+                                                        @click="changePage(pgNaviNo)"
+                                                    />
+                                                </div>
 
                                                 <MaterialPaginationItem
                                                     next
-                                                    :value="endRange ? endPage : endPage + 1"
+                                                    @click="
+                                                        changePage(
+                                                            naviData.endRange ? naviData.endPage : naviData.endPage + 1
+                                                        )
+                                                    "
                                                 />
                                             </MaterialPagination>
-                                            param.pgNo : {{ param.pgNo }}
                                         </div>
                                     </div>
                                 </div>
