@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, watch, ref, reactive } from "vue";
 import { useMapStore } from "@/stores/MapStore.js";
-import { userStore as useUserStore } from "@/stores/UserStore.js";
+import { useUserStore } from "@/stores/UserStore.js";
 import { getDealByApt, addBookmark, deleteBookmark } from "@/api/map.js";
 import AptDetailTable from "./AptDetailTable.vue";
 
