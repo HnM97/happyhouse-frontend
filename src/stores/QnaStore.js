@@ -35,8 +35,6 @@ export const useQnaStore = defineStore("useQnaStore", {
             await writeQna(
                 param,
                 ({ data }) => {
-                    console.log("QnaStore writeQnaContent data : ");
-                    console.log(data);
                     let msg = "등록 처리시 문제가 발생했습니다.";
                     if (data === "success") {
                         msg = "등록이 완료되었습니다.";
@@ -50,6 +48,8 @@ export const useQnaStore = defineStore("useQnaStore", {
         },
 
         async writeCommentContent(param) {
+            console.log("qnastore writecommentcontent param: ");
+            console.log(param);
             await writeComment(
                 param,
                 ({ data }) => {
@@ -59,7 +59,7 @@ export const useQnaStore = defineStore("useQnaStore", {
                     if (data === "success") {
                         msg = "등록이 완료되었습니다.";
                     }
-                    alert(msg);
+                    console.log(msg);
                 },
                 (error) => {
                     console.log(error);
