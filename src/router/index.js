@@ -61,10 +61,10 @@ const router = createRouter({
             path: "/notice",
             name: "notice",
             component: NoticeView,
-            redirect: "/notice/list",
+            redirect: "/notice/list/:articleno/:pgNo",
             children: [
                 {
-                    path: "list",
+                    path: "list/:articleno/:pgNo",
                     name: "noticelist",
                     component: NoticeList,
                 },

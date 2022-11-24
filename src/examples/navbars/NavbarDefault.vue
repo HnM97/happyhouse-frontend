@@ -15,6 +15,9 @@ import { computed } from "@vue/reactivity";
 const userStore = useUserStore();
 const route = useRoute();
 
+const articleNo = ref(1);
+const pgNo = ref(1);
+
 const props = defineProps({
     action: {
         type: Object,
@@ -141,7 +144,7 @@ async function onClickLogout() {
                         ? 'text-dark font-weight-bolder ms-sm-3'
                         : 'text-white font-weight-bolder ms-sm-3',
                 ]"
-                to="/notice"
+                :to="{ name: 'noticelist', params: { articleno: articleNo, pgNo: pgNo } }"
                 rel="tooltip"
                 title="Designed and Coded by Creative Tim"
                 data-placement="bottom"

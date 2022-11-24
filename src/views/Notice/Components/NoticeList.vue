@@ -11,14 +11,17 @@ import backgroundImage from "@/assets/img/background.jpg";
 import MaterialButton from "@/components/MaterialButton.vue";
 
 import Router from "@/router";
+import { useRoute } from "vue-router";
 import NoticeListItem from "@/views/Notice/Components/NoticeListItem.vue";
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 import { listNotice } from "@/api/notice";
 
 const headers = ["글번호", "제목", "작성자", "작성일", "조회수"];
 const articles = reactive([]);
 const pgNaviList = reactive([]);
-const activeValue = ref("");
+
+const route = useRoute();
+let paramArticleno = route.params.articleno;
 
 const param = reactive({
     pgNo: 1,
@@ -27,6 +30,7 @@ const param = reactive({
     key: "",
     word: "",
 });
+param.pgNo = route.params.pgNo;
 
 const naviData = reactive({
     currentPage: 1,
@@ -58,28 +62,23 @@ function initNotice() {
             for (let index = 0; index < data.list.length; index++) {
                 articles.push(data.list[index]);
             }
-            console.log("NoticeList initNotice data VV");
-            console.log(data);
 
             pgNaviList.length = 0;
-            console.log("NoticeList initNotice naviData.startPage : " + naviData.startPage);
-            console.log("NoticeList initNotice naviData.endPage : " + naviData.endPage);
             for (let index = naviData.startPage; index <= naviData.endPage; index++) {
                 pgNaviList.push(index);
             }
-            console.log(pgNaviList);
         },
         (error) => {
             console.log(error);
         }
     );
 }
-// const cp = ref(null);
+
 function changePage(pgNaviNo) {
     param.pgNo = pgNaviNo;
     initNotice();
 }
-// :"naviData.currentPage === pgNaviNo ? 'active' : ''"
+
 onMounted(() => {
     setMaterialInput();
 });

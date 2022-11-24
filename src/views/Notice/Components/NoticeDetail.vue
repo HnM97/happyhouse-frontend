@@ -67,17 +67,25 @@ const message = computed(() => {
 });
 
 function movelist() {
-    Router.push("/notice");
+    Router.replace({ path: `/notice/list/${article.articleno}/${paramPgNo}` });
+    // Router.replace({
+    //     name: "noticelist",
+    //     params: {
+    //         articleno: article.articleno,
+    //         pgNo: paramPgNo,
+    //     },
+    // });
 }
 
 function moveModifyNotice() {
-    Router.replace({
-        name: "noticemodify",
-        params: {
-            articleno: article.articleno,
-            pgNo: paramPgNo,
-        },
-    });
+    Router.replace({ path: `/notice/modify/${article.articleno}/${paramPgNo}` });
+    // Router.replace({
+    //     name: "noticemodify",
+    //     params: {
+    //         articleno: article.articleno,
+    //         pgNo: paramPgNo,
+    //     },
+    // });
     //   this.$router.push({ path: `/board/modify/${this.article.articleno}` });
 }
 function deleteThisNotice() {
@@ -128,7 +136,6 @@ function deleteThisNotice() {
                             <div class="col-lg-10 col-md-10 z-index-2 position-relative px-md-2 px-sm-5 mx-auto">
                                 <div class="align-items-center my-4 mt-5">
                                     <h3 class="">
-                                        <!-- subject -->
                                         {{ article.subject }}
                                     </h3>
                                 </div>
@@ -136,14 +143,12 @@ function deleteThisNotice() {
                                     <div class="col-4 d-flex justify-content-start">
                                         <span class="me-2">작성자</span>
                                         <span class="h6">
-                                            <!-- 김싸피 -->
                                             {{ article.userid }}
                                         </span>
                                     </div>
                                     <div class="col-3 d-flex justify-content-end">
                                         <span class="me-2">조회수</span>
                                         <span class="h6">
-                                            <!-- 7 -->
                                             {{ article.hit }}
                                         </span>
                                     </div>
@@ -152,16 +157,11 @@ function deleteThisNotice() {
                                     <div class="col d-flex justify-content-start">
                                         <span class="me-2">작성일</span>
                                         <span>
-                                            <!-- 2022-11-19 -->
                                             {{ article.registerTime }}
                                         </span>
                                     </div>
                                 </div>
                                 <p class="text-lg my-6">
-                                    <!-- 공지사항 내용입니다 공지사항 내용입니다 공지사항 내용입니다 공지사항 내용입니다
-                                    공지사항 내용입니다 공지사항 내용입니다 공지사항 내용입니다 공지사항 내용입니다
-                                    공지사항 내용입니다 공지사항 내용입니다 공지사항 내용입니다 공지사항 내용입니다
-                                    공지사항 내용입니다 공지사항 내용입니다 공지사항 내용입니다 공지사항 내용입니다 -->
                                     {{ article.content }}
                                     <br />
                                 </p>
