@@ -5,20 +5,24 @@ import { storeToRefs } from "pinia";
 let map = null;
 let clusterer = null;
 let geocoder = null;
+let selectedMarker = null; // 클릭한 마커를 담을 변수
 
 const store = useMapStore();
-const markerUrl = "src/assets/img/map-marker.png";
+const normalMarkerUrl = "src/assets/img/map-origin-marker.png";
+const selectMarkerUrl = "src/assets/img/map-select-marker.png";
 
-// const keyword = computed(() => {
-//   changeCenterByKeyword(store.getKeyword);
-// });
-// store.$subscribe(changeCenterByKeyword);
-
-// store.$subscribe((mutation, state) => {
-//   console.log("map subscribe");
-//   changeCenterByKeyword(state.keyword);
-//   initCluster();
-// });
+const MARKER_WIDTH = 50, // 기본, 클릭 마커의 너비
+  MARKER_HEIGHT = 50, // 기본, 클릭 마커의 높이
+  OFFSET_X = 12, // 기본, 클릭 마커의 기준 X좌표
+  OFFSET_Y = MARKER_HEIGHT, // 기본, 클릭 마커의 기준 Y좌표
+  OVER_MARKER_WIDTH = 60, // 오버 마커의 너비
+  OVER_MARKER_HEIGHT = 60, // 오버 마커의 높이
+  OVER_OFFSET_X = 18, // 오버 마커의 기준 X좌표
+  OVER_OFFSET_Y = OVER_MARKER_HEIGHT, // 오버 마커의 기준 Y좌표
+  SELECT_MARKER_WIDTH = 60, // 선택 마커의 너비
+  SELECT_MARKER_HEIGHT = 60, // 선택 마커의 높이
+  SELECT_OFFSET_X = 18, // 선택 마커의 기준 X좌표
+  SELECT_OFFSET_Y = OVER_MARKER_HEIGHT; // 오버 마커의 기준 Y좌표
 
 watch(
   () => store.aptList,
@@ -76,50 +80,22 @@ function initMap() {
   //지도 객체는 반응형 관리 대상이 아니므로 initMap에서 선언합니다.
   map = new kakao.maps.Map(container, options);
 
-  clusterer = new kakao.maps.MarkerClusterer({
-    map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
-    averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
-    minLevel: 4, // 클러스터 할 최소 지도 레벨
-  });
-
-  var imageSize = new kakao.maps.Size(50, 50), // 마커이미지의 크기입니다
-    imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
-
-  var markerImage = new kakao.maps.MarkerImage(
-    markerUrl,
-    imageSize,
-    imageOption
-  );
-
   // 주소-좌표 변환 객체를 생성합니다
   geocoder = new kakao.maps.services.Geocoder();
 
-  // console.log(store.aptList);
-  const aptList = store.aptList;
-  let markers = [];
-  aptList.map((apt, index) => {
-    markers.push(
-      new kakao.maps.Marker({
-        image: markerImage,
-        position: new kakao.maps.LatLng(apt.lat, apt.lng),
-      })
-    );
+  clusterer = new kakao.maps.MarkerClusterer({
+    map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+    averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+    minLevel: 5, // 클러스터 할 최소 지도 레벨
   });
 
-  console.log("add markers in cluster");
-  console.log(markers);
-
-  clusterer.addMarkers(markers);
-
-  // var roadviewContainer = document.getElementById("roadview");
-
-  // roadview.setPanoId(1050215189, placePosition);
+  changeMarkers();
 
   // 새로고침 시 상태 유지
-  // if (store.keyword != null) {
-  //   changeCenterByKeyword(store.keyword);
-  //   changeMarkers();
-  // }
+  if (store.keyword != null) {
+    changeCenterByKeyword(store.keyword);
+    changeMarkers();
+  }
 }
 
 function changeMarkers() {
@@ -128,25 +104,63 @@ function changeMarkers() {
     return;
   }
 
-  var imageSize = new kakao.maps.Size(50, 50), // 마커이미지의 크기입니다
-    imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+  const normalImageSize = new kakao.maps.Size(MARKER_WIDTH, MARKER_HEIGHT), // 마커이미지의 크기입니다
+    overImageSize = new kakao.maps.Size(OVER_MARKER_WIDTH, OVER_MARKER_HEIGHT),
+    selectImageSize = new kakao.maps.Size(SELECT_MARKER_WIDTH, SELECT_MARKER_HEIGHT),
+    normalImageOption = { offset: new kakao.maps.Point(OFFSET_X, OFFSET_Y) }, // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+    overImageOption = { offset: new kakao.maps.Point(OVER_OFFSET_X, OVER_OFFSET_Y) },
+    selectImageOption = { offset: new kakao.maps.Point(SELECT_OFFSET_X, SELECT_OFFSET_Y) };
 
-  var markerImage = new kakao.maps.MarkerImage(
-    markerUrl,
-    imageSize,
-    imageOption
-  );
+  const normalImage = new kakao.maps.MarkerImage(normalMarkerUrl, normalImageSize, normalImageOption);
+  const overImage = new kakao.maps.MarkerImage(normalMarkerUrl, overImageSize, overImageOption);
+  const selectImage = new kakao.maps.MarkerImage(selectMarkerUrl, selectImageSize, selectImageOption);
 
   // console.log(store.aptList);
   const aptList = store.aptList;
   let markers = [];
   aptList.map((apt, index) => {
-    markers.push(
-      new kakao.maps.Marker({
-        image: markerImage,
-        position: new kakao.maps.LatLng(apt.lat, apt.lng),
-      })
-    );
+    var marker = new kakao.maps.Marker({
+      image: normalImage,
+      position: new kakao.maps.LatLng(apt.lat, apt.lng),
+    });
+    marker.normalImage = normalImage;
+
+    // 마커에 mouseover 이벤트를 등록합니다
+    kakao.maps.event.addListener(marker, "mouseover", function () {
+      // 클릭된 마커가 없고, mouseover된 마커가 클릭된 마커가 아니면
+      // 마커의 이미지를 오버 이미지로 변경합니다
+      if (!selectedMarker || selectedMarker !== marker) {
+        marker.setImage(overImage);
+      }
+    });
+
+    // 마커에 mouseout 이벤트를 등록합니다
+    kakao.maps.event.addListener(marker, "mouseout", function () {
+      // 클릭된 마커가 없고, mouseout된 마커가 클릭된 마커가 아니면
+      // 마커의 이미지를 기본 이미지로 변경합니다
+      if (!selectedMarker || selectedMarker !== marker) {
+        marker.setImage(normalImage);
+      }
+    });
+
+    // 마커에 click 이벤트를 등록합니다
+    kakao.maps.event.addListener(marker, "click", function () {
+      // 클릭된 마커가 없고, click 마커가 클릭된 마커가 아니면
+      // 마커의 이미지를 클릭 이미지로 변경합니다
+      if (!selectedMarker || selectedMarker !== marker) {
+        // 클릭된 마커 객체가 null이 아니면
+        // 클릭된 마커의 이미지를 기본 이미지로 변경하고
+        !!selectedMarker && selectedMarker.setImage(selectedMarker.normalImage);
+
+        // 현재 클릭된 마커의 이미지는 클릭 이미지로 변경합니다
+        marker.setImage(selectImage);
+      }
+
+      // 클릭된 마커를 현재 클릭된 마커 객체로 설정합니다
+      selectedMarker = marker;
+    });
+
+    markers.push(marker);
   });
   console.log(markers);
   console.log("add markers in cluster");
@@ -176,9 +190,7 @@ function displayMarker(markerPositions) {
     data.markers.forEach((marker) => marker.setMap(null));
   }
 
-  const positions = markerPositions.map(
-    (position) => new kakao.maps.LatLng(...position)
-  );
+  const positions = markerPositions.map((position) => new kakao.maps.LatLng(...position));
 
   if (positions.length > 0) {
     data.markers = positions.map(
@@ -189,10 +201,7 @@ function displayMarker(markerPositions) {
         })
     );
 
-    const bounds = positions.reduce(
-      (bounds, latlng) => bounds.extend(latlng),
-      new kakao.maps.LatLngBounds()
-    );
+    const bounds = positions.reduce((bounds, latlng) => bounds.extend(latlng), new kakao.maps.LatLngBounds());
 
     map.setBounds(bounds);
   }

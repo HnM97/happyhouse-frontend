@@ -21,6 +21,12 @@ watch(
     console.log("watch");
   }
 );
+
+onMounted(() => {
+  if (store.keyword != null) {
+    list.aptList = store.aptList;
+  }
+});
 </script>
 
 <template>
