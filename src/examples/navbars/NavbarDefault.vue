@@ -123,6 +123,7 @@ async function onClickLogout() {
         }"
     >
         <div :class="props.transparent || props.light || props.dark ? 'container' : 'container-fluid px-0'">
+            <font-awesome-icon class="m-2" icon="fa-solid fa-house" />
             <RouterLink
                 class="navbar-brand d-none d-md-block"
                 :class="[
@@ -135,7 +136,7 @@ async function onClickLogout() {
                 title="Designed and Coded by Creative Tim"
                 data-placement="bottom"
             >
-                SSAFY
+                WHERE IS MY HOME
             </RouterLink>
             <RouterLink
                 class="navbar-brand d-none d-md-block"
