@@ -3,7 +3,7 @@ import { apiInstance } from "./index.js";
 const api = apiInstance();
 
 function listNotice(param, success, fail) {
-    api.get(`/notice/notices`, { params: param }).then(success).catch(fail);
+    api.get(`notice/notices`, { params: param }).then(success).catch(fail);
 }
 
 function getNotice(articleno, success, fail) {

@@ -151,6 +151,21 @@ async function onClickLogout() {
             >
                 공지사항
             </RouterLink>
+
+            <RouterLink
+                class="navbar-brand d-none d-md-block"
+                :class="[
+                    (props.transparent && textDark.value) || !props.transparent
+                        ? 'text-dark font-weight-bolder ms-sm-3'
+                        : 'text-white font-weight-bolder ms-sm-3',
+                ]"
+                :to="{ name: 'qnalist', params: { articleno: articleNo, pgNo: pgNo } }"
+                rel="tooltip"
+                title="Designed and Coded by Creative Tim"
+                data-placement="bottom"
+            >
+                Q & A
+            </RouterLink>
             <!-- <RouterLink
         class="navbar-brand d-block d-md-none"
         :class="props.transparent || props.dark ? 'text-white' : 'font-weight-bolder ms-sm-3'"

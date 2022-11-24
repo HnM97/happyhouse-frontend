@@ -7,6 +7,12 @@ import NoticeRegist from "@/views/Notice/Components/NoticeRegist.vue";
 import NoticeDetail from "@/views/Notice/Components/NoticeDetail.vue";
 import NoticeModify from "@/views/Notice/Components/NoticeModify.vue";
 
+import QnaView from "@/views/QnA/QnaView.vue";
+import QnaList from "@/views/QnA/Components/QnaList.vue";
+import QnaRegist from "@/views/QnA/Components/QnaRegist.vue";
+import QnaDetail from "@/views/QnA/Components/QnaDetail.vue";
+import QnaModify from "@/views/QnA/Components/QnaModify.vue";
+
 import UserView from "@/views/User/UserView.vue";
 import UserRegist from "@/views/User/Components/UserRegist.vue";
 import UserLogin from "@/views/User/Components/UserLogin.vue";
@@ -43,6 +49,7 @@ const onlyAdmin = async (to, from, next) => {
         next();
     } else {
         alert("관리자만 접근이 가능합니다");
+        Router.push({ name: "login" });
     }
 };
 
@@ -54,6 +61,7 @@ const router = createRouter({
             name: "home",
             component: HomeView,
         },
+
         /**
          * Notice
          */
@@ -85,6 +93,41 @@ const router = createRouter({
                     name: "noticemodify",
                     beforeEnter: onlyAdmin,
                     component: NoticeModify,
+                },
+            ],
+        },
+
+        /**
+         * QnA
+         */
+        {
+            path: "/qna",
+            name: "qna",
+            component: QnaView,
+            redirect: "/qna/list/:articleno/:pgNo",
+            children: [
+                {
+                    path: "list/:articleno/:pgNo",
+                    name: "qnalist",
+                    component: QnaList,
+                },
+                {
+                    path: "regist",
+                    name: "qnaregist",
+                    beforeEnter: onlyAuthUser,
+                    component: QnaRegist,
+                },
+                {
+                    path: "detail/:articleno/:pgNo",
+                    name: "qnadetail",
+                    beforeEnter: onlyAuthUser,
+                    component: QnaDetail,
+                },
+                {
+                    path: "modify/:articleno/:pgNo",
+                    name: "qnamodify",
+                    beforeEnter: onlyAuthUser,
+                    component: QnaModify,
                 },
             ],
         },
