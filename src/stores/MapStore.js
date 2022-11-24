@@ -23,11 +23,10 @@ export const useMapStore = defineStore("useMapStore", {
   actions: {
     async changeRegcode(keyword) {
       await keywordToReg(
-        keyword.value,
+        keyword,
         ({ data }) => {
-          console.log("chage regcode");
-          console.log(keyword.value);
-          this.keyword = keyword.value;
+          console.log("change regcode");
+          this.keyword = keyword;
           this.params.dongCode = data;
           this.setAptList(this.params);
           if (this.bookmark) {
@@ -67,14 +66,19 @@ export const useMapStore = defineStore("useMapStore", {
       await getBookmarkList(
         userId,
         ({ data }) => {
-          this.keyword = "";
           this.aptList = data;
         },
         (error) => {
           console.log(error);
         }
       );
-      this.bookmark = "true";
+      this.bookmark = true;
+    },
+
+    async resetBookmark() {
+      console.log(this.keyword);
+      await this.changeRegcode(this.keyword);
+      this.bookmark = false;
     },
   },
 });

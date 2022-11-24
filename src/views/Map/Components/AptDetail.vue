@@ -2,7 +2,12 @@
 import { onMounted, watch, ref, reactive } from "vue";
 import { useMapStore } from "@/stores/MapStore.js";
 import { useUserStore } from "@/stores/UserStore.js";
-import { getDealByApt, addBookmark, deleteBookmark } from "@/api/map.js";
+import {
+  getDealByApt,
+  addBookmark,
+  deleteBookmark,
+  checkBookmark,
+} from "@/api/map.js";
 import AptDetailTable from "./AptDetailTable.vue";
 
 const store = useMapStore();
@@ -18,6 +23,7 @@ const tableData = reactive({
   headers: ["아파트이름", "거래일시", "거래금액", "면적"],
   rows: [],
 });
+const normalMarkerUrl = "src/assets/img/map-origin-marker.png";
 
 const showInfo = ref(false);
 
@@ -57,23 +63,21 @@ function initMap() {
 function setRoadView(selectedMarker) {
   const position = selectedMarker.getPosition();
   rv.relayout();
-  // const normalImageSize = new kakao.maps.Size(MARKER_WIDTH, MARKER_HEIGHT);
-  // const normalImageOption = { offset: new kakao.maps.Point(OFFSET_X, OFFSET_Y) };
-  // const normalImage = new kakao.maps.MarkerImage(normalMarkerUrl, normalImageSize, normalImageOption);
 
-  // 지도에 올릴 마커를 생성합니다.
-  const mMarker = new kakao.maps.Marker({
-    position: position, // 지도의 중심좌표에 올립니다.
-    map: map, // 생성하면서 지도에 올립니다.
-  });
+  const MARKER_WIDTH = 40, // 기본, 클릭 마커의 너비
+    MARKER_HEIGHT = 40, // 기본, 클릭 마커의 높이
+    OFFSET_X = 12, // 기본, 클릭 마커의 기준 X좌표
+    OFFSET_Y = MARKER_HEIGHT; // 기본, 클릭 마커의 기준 Y좌표
 
-  // 지도에 올릴 장소명 인포윈도우 입니다.
-  var mLabel = new kakao.maps.InfoWindow({
-    position: position, // 지도의 중심좌표에 올립니다.
-    content: apt.apartmentName, // 인포윈도우 내부에 들어갈 컨텐츠 입니다.
-  });
-
-  mLabel.open(map, mMarker);
+  const normalImageSize = new kakao.maps.Size(MARKER_WIDTH, MARKER_HEIGHT);
+  const normalImageOption = {
+    offset: new kakao.maps.Point(OFFSET_X, OFFSET_Y),
+  };
+  const normalImage = new kakao.maps.MarkerImage(
+    normalMarkerUrl,
+    normalImageSize,
+    normalImageOption
+  );
 
   // 특정 위치의 좌표와 가까운 로드뷰의 panoId를 추출하여 로드뷰를 띄운다.
   rc.getNearestPanoId(position, 50, function (panoId) {
@@ -85,6 +89,7 @@ function setRoadView(selectedMarker) {
   kakao.maps.event.addListener(rv, "init", function () {
     // 로드뷰에 올릴 마커를 생성합니다.
     var rMarker = new kakao.maps.Marker({
+      image: normalImage,
       position: position,
       map: rv, //map 대신 rv(로드뷰 객체)로 설정하면 로드뷰에 올라갑니다.
     });
@@ -100,7 +105,10 @@ function setRoadView(selectedMarker) {
     var projection = rv.getProjection(); // viewpoint(화면좌표)값을 추출할 수 있는 projection 객체를 가져옵니다.
 
     // 마커의 position과 altitude값을 통해 viewpoint값(화면좌표)를 추출합니다.
-    var viewpoint = projection.viewpointFromCoords(rMarker.getPosition(), rMarker.getAltitude());
+    var viewpoint = projection.viewpointFromCoords(
+      rMarker.getPosition(),
+      rMarker.getAltitude()
+    );
     rv.setViewpoint(viewpoint); //로드뷰에 뷰포인트를 설정합니다.
 
     //각 뷰포인트 값을 초기화를 위해 저장해 놓습니다.
@@ -163,6 +171,17 @@ async function setTableData() {
       console.log(error);
     }
   );
+
+  await checkBookmark(
+    userStore.userInfo.userId,
+    apt.value.aptCode,
+    ({ data }) => {
+      bookmark.value = data;
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
 }
 
 function handlePrevious() {}
@@ -193,7 +212,10 @@ async function handleBookmark() {
             ><span class="screen_out">로드뷰 크게보기</span></a
           >
           <!-- 로드뷰 크게보기 버튼입니다 -->
-          <a href="javascript:;" class="btn_comm btn_resetRoadview" @click="resetRoadview"
+          <a
+            href="javascript:;"
+            class="btn_comm btn_resetRoadview"
+            @click="resetRoadview"
             ><span class="screen_out">로드뷰 크게보기</span></a
           >
           <!-- 로드뷰 리셋 버튼입니다 -->
@@ -204,21 +226,34 @@ async function handleBookmark() {
       <div class="ms-2 pb-1 fs-4">
         <div class="row">
           <div class="col-1">
-            <font-awesome-icon @click="handlePrevious" icon="fa-solid fa-arrow-left-long" title="돌아가기" />
+            <font-awesome-icon
+              @click="handlePrevious"
+              icon="fa-solid fa-arrow-left-long"
+              title="돌아가기"
+            />
           </div>
           <div class="col-4 text-nowrap">
             {{ apt.apartmentName }}
           </div>
           <div class="col-5"></div>
           <a class="col-1 ms-4" @click="handleBookmark">
-            <font-awesome-icon v-show="bookmark" icon="fa-solid fa-heart"></font-awesome-icon>
-            <font-awesome-icon v-show="!bookmark" icon="fa-regular fa-heart"></font-awesome-icon>
+            <font-awesome-icon
+              v-show="bookmark"
+              icon="fa-solid fa-heart"
+            ></font-awesome-icon>
+            <font-awesome-icon
+              v-show="!bookmark"
+              icon="fa-regular fa-heart"
+            ></font-awesome-icon>
           </a>
         </div>
       </div>
       <hr class="my-0 pb-3 rounded-1 border-dark border-1 border-top" />
       <div class="pb-2">
-        <font-awesome-icon class="ms-2 me-1" icon="fa-solid fa-person-digging" />
+        <font-awesome-icon
+          class="ms-2 me-1"
+          icon="fa-solid fa-person-digging"
+        />
         {{ apt.buildYear }}
       </div>
       <div class="pb-2">
@@ -226,7 +261,10 @@ async function handleBookmark() {
         {{ apt.roadName }}
       </div>
       <div class="pb-2">
-        <font-awesome-icon class="ms-2 me-1" icon="fa-solid fa-circle-dollar-to-slot" />
+        <font-awesome-icon
+          class="ms-2 me-1"
+          icon="fa-solid fa-circle-dollar-to-slot"
+        />
         {{ apt.minAmount }} ~ {{ apt.maxAmount }}
       </div>
       <div class="fs-5 pt-2 pb-1">거래내역</div>
@@ -280,7 +318,8 @@ async function handleBookmark() {
   display: block;
   width: 70px;
   height: 27px;
-  background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/sample_button_control.png) no-repeat;
+  background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/sample_button_control.png)
+    no-repeat;
 }
 .btn_linkMap {
   background-position: 0 0;

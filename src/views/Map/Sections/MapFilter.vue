@@ -5,17 +5,25 @@ import MaterialInput from "@/components/MaterialInput.vue";
 import MaterialCheckbox from "@/components/MaterialCheckbox.vue";
 import bootstrap from "bootstrap/dist/js/bootstrap.min.js";
 import { useMapStore } from "@/stores/MapStore.js";
+import { useUserStore } from "@/stores/UserStore.js";
 const checks = ["Hospital", "Subway", "BookMark"];
 const conditions = ["Amount", "Popular", "Area"];
 
-const store = useMapStore();
+const mapStore = useMapStore();
+const userStore = useUserStore();
 const keyword = ref("");
 function handleSearch() {
-  store.resetAptList;
-  store.changeRegcode(keyword);
+  mapStore.resetAptList;
+  mapStore.changeRegcode(keyword);
 }
 
-function handleBookmark() {}
+async function handleBookmark() {
+  if (mapStore.bookmark) {
+    await mapStore.resetBookmark();
+  } else {
+    await mapStore.setBookmark(userStore.userInfo.userId);
+  }
+}
 </script>
 
 <template>
@@ -28,14 +36,40 @@ function handleBookmark() {}
           placeholder="Type here..."
           size="md"
         />
-        <a @click="handleSearch" href="#" class="btn mb-0 btn-sm bg-gradient-secondary text-nowrap">검색</a>
+        <a
+          @click="handleSearch"
+          href="#"
+          class="btn mb-0 btn-sm bg-gradient-secondary text-nowrap"
+          >검색</a
+        >
       </div>
-      <div class="col-1 border-black my-auto" v-for="(check, index) in checks" :key="index">
-        <MaterialCheckbox class="ps-0" :id="`check-${index}`">
+      <div
+        class="col-1 border-black my-auto"
+        v-for="(check, index) in checks"
+        :key="index"
+      >
+        <MaterialCheckbox
+          v-if="index == 2"
+          class="ps-0"
+          :id="`check-${index}`"
+          @click="handleBookmark"
+        >
+          {{ check }}
+        </MaterialCheckbox>
+        <MaterialCheckbox
+          v-else
+          class="ps-0"
+          :id="`check-${index}`"
+          @click="handleBookmark"
+        >
           {{ check }}
         </MaterialCheckbox>
       </div>
-      <div class="col-1 border-black me-3" v-for="(condition, index) in conditions" :key="index">
+      <div
+        class="col-1 border-black me-3"
+        v-for="(condition, index) in conditions"
+        :key="index"
+      >
         <div class="dropdown mt-2">
           <button
             class="btn btn-sm btn-secondary dropdown-toggle"

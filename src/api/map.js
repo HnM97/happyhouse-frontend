@@ -21,7 +21,10 @@ async function getDealByApt(param, success, fail) {
 }
 
 async function addBookmark(userId, aptCode, success, fail) {
-  api.post(`/bookmark`, { userId: userId, aptCode: aptCode }).then(success).catch(fail);
+  api
+    .post(`/bookmark`, { userId: userId, aptCode: aptCode })
+    .then(success)
+    .catch(fail);
 }
 
 async function deleteBookmark(userId, aptCode, success, fail) {
@@ -32,7 +35,23 @@ async function deleteBookmark(userId, aptCode, success, fail) {
 }
 
 async function getBookmarkList(userId, success, fail) {
-  api.get(`/house/bookmark?userId=${userId}`).then(success).catch(fail);
+  api.get(`/bookmark?userId=${userId}`).then(success).catch(fail);
 }
 
-export { keywordToReg, searchApt, getAddress, getDealByApt, addBookmark, deleteBookmark, getBookmarkList };
+async function checkBookmark(userId, aptCode, success, fail) {
+  api
+    .get(`/bookmark/check`, { params: { userId: userId, aptCode: aptCode } })
+    .then(success)
+    .catch(fail);
+}
+
+export {
+  keywordToReg,
+  searchApt,
+  getAddress,
+  getDealByApt,
+  addBookmark,
+  deleteBookmark,
+  getBookmarkList,
+  checkBookmark,
+};

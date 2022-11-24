@@ -26,8 +26,7 @@ function resetMapStore() {
 }
 
 function handleSearch() {
-  console.log(keyword);
-  store.changeRegcode(keyword).then(() => {
+  store.changeRegcode(keyword.value).then(() => {
     Router.push({ path: "/map" });
     console.log("after changeRegcode");
   });
@@ -60,13 +59,25 @@ onMounted(() => {
     </div>
   </div>
   <Header>
-    <div class="page-header min-vh-70" :style="`background-image: url(${backgroundImage})`" loading="lazy">
+    <div
+      class="page-header min-vh-70"
+      :style="`background-image: url(${backgroundImage})`"
+      loading="lazy"
+    >
       <span class="mask bg-gradient-dark opacity-6"></span>
       <div class="container">
         <div class="row">
           <div class="col-lg-7 text-center mx-auto position-relative">
-            <h1 class="text-white pt-3 mt-n5 me-2" :style="{ display: 'inline-block ' }">현재 가장 핫한</h1>
-            <h1 class="text-white px-5 mt-3 mb-5" :style="{ fontWeight: '500' }">
+            <h1
+              class="text-white pt-3 mt-n5 me-2"
+              :style="{ display: 'inline-block ' }"
+            >
+              현재 가장 핫한
+            </h1>
+            <h1
+              class="text-white px-5 mt-3 mb-5"
+              :style="{ fontWeight: '500' }"
+            >
               <span class="text-white" id="typed"></span> 알아보세요 !
             </h1>
           </div>
