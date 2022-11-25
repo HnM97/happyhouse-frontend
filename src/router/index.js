@@ -48,9 +48,18 @@ const onlyAdmin = async (to, from, next) => {
         next();
     } else {
         alert("관리자만 접근이 가능합니다");
-        if (userStore.userInfo === null) {
+        if (!userStore.userInfo.userId && !userStore.isLogin) {
             Router.push({ name: "login" });
         }
+    }
+};
+
+const notLogin = async (to, from, next) => {
+    const userStore = useUserStore();
+    if (!userStore.userInfo.userId && !userStore.isLogin) {
+        next();
+    } else {
+        Router.push({ name: "home" });
     }
 };
 
@@ -144,11 +153,13 @@ const router = createRouter({
                 {
                     path: "login",
                     name: "login",
+                    beforeEnter: notLogin,
                     component: UserLogin,
                 },
                 {
                     path: "regist",
                     name: "regist",
+                    beforeEnter: notLogin,
                     component: UserRegist,
                 },
                 {
